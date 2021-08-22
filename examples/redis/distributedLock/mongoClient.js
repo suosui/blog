@@ -2,16 +2,16 @@ const { MongoClient } = require('mongodb');
 const blubird = require('bluebird')
 
 const dbConfig = {
-  connectionString: process.env.DB_STRING || 'mongodb://127.0.0.1:27017/main',
+  connectionString: process.env.DB_STRING || 'mongodb://127.0.0.1:27017/local',
   connectHost: process.env.DB_HOST || 'mongodb://127.0.0.1:27017',
-  dbname: process.env.DB_NAME || 'main',
+  dbname: process.env.DB_NAME || 'local',
   username: process.env.DB_USERNAME || '',
   password: process.env.DB_PASSWORD || '',
 }
 const mongoPromise = blubird.promisify(MongoClient.connect);
 
 let client;
-const initDB = async () => {
+const connectDB = async () => {
   try {
     client = await mongoPromise(dbConfig.connectionString, {
       useNewUrlParser: true,
@@ -22,7 +22,6 @@ const initDB = async () => {
         return client.db(dbConfig.dbname).collection(name);
       }
     }
-    console.log('Mongodb链接成功:' + dbConfig.connectionString);
     return db;
   } catch (e) {
     console.error(e);
@@ -41,5 +40,5 @@ const closeDB = () => {
 
 module.exports = {
   closeDB: closeDB,
-  initDB: initDB
+  connectDB: connectDB
 }

@@ -43,7 +43,7 @@ const delKey = (key) => {
 
 const setNx = (key, value, expire) => {
     return new Promise((resolve, reject) => {
-        client.set(key, value, 'NX', expire, (err, replay) => {
+        client.set(key, value, 'EX', expire, 'NX', (err, replay) => {
             if (err) {
                 reject(err);
             } else {
@@ -57,10 +57,9 @@ const getLock = async (key) => {
     const clienId = Math.random() * 100; //模拟客户端Id
     try {
         const result = await setNx(key, clienId, 10); //防止死锁,10秒
-        if (result == 0) {
-            return;
+        if (result === 'OK') {
+            return clienId;
         }
-        return clienId;
     } catch (error) {
         console.log(error)
         return;
@@ -68,9 +67,15 @@ const getLock = async (key) => {
 }
 
 const delLock = async (key, clienId) => {
+    const script = "if redis.call('get',KEYS[1]) == ARGV[1] then" +
+        "   return redis.call('del',KEYS[1]) " +
+        "else" +
+        "   return 0 " +
+        "end";
     try {
-        if (clienId == await redis.getKey(key)) {// 注意：判断和释放要用lua脚本写，保证原子性
-            return await redis.delKey(key);
+        const result = await client.eval(script, 1, key, clienId);
+        if (result === 1) {
+            return true;
         }
     } catch (err) {
         console.log(err)

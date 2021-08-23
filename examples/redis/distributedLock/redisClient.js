@@ -43,7 +43,7 @@ const delKey = (key) => {
 
 const setNx = (key, value, expire) => {
     return new Promise((resolve, reject) => {
-        client.setnx(key, value, (err, replay) => {
+        client.set(key, value, 'NX', expire, (err, replay) => {
             if (err) {
                 reject(err);
             } else {

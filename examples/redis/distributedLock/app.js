@@ -1,3 +1,6 @@
+/**
+ * 分布式锁
+ */
 const express = require('express')
 const redis = require('./redisClient');
 const mongo = require('./mongoClient');

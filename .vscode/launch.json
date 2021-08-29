@@ -7,7 +7,16 @@
         {
             "type": "pwa-node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "segmentLock",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\examples\\redis\\segmentLock\\app.js"
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "distributedLock",
             "skipFiles": [
                 "<node_internals>/**"
             ],

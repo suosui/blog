@@ -36,11 +36,14 @@
 
 ## [Redis](../../master/docs/sections/Nodejs.md)
 
-> redis远比你想象的强大的多！。
+> redis远比你想象的强大的多！
 
-* [`[基础]` 底层](../../master/docs/sections/Redis.md#包管理)
-* [`[基础]` 对象](../../master/docs/sections/Redis.md#事件循环)
-* [`[基础]` 复制](../../master/docs/sections/Redis.md#Buffer)
-* [`[中级]` 哨兵](../../master/docs/sections/Redis.md#Cluster)
+* [`[基础]` 底层](../../master/docs/sections/Redis.md#底层)
+* [`[基础]` 对象](../../master/docs/sections/Redis.md#对象)
+* [`[基础]` 主从复制](../../master/docs/sections/Redis.md#主从复制)
+* [`[中级]` 持久化](../../master/docs/sections/Redis.md#持久化)
+* [更多](../../master/docs/sections/Redis.m)
 
 **常见问题**
+
+* 为什么用Redis? [[更多]](../../master/docs/sections/Redis.md#Redis特性)

@@ -42,7 +42,7 @@
 * [`[基础]` 对象](../../master/docs/sections/Redis.md#对象)
 * [`[基础]` 主从复制](../../master/docs/sections/Redis.md#主从复制)
 * [`[中级]` 持久化](../../master/docs/sections/Redis.md#持久化)
-* [更多](../../master/docs/sections/Redis.m)
+* [更多](../../master/docs/sections/Redis.md)
 
 **常见问题**
 

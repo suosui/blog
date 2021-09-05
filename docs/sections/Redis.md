@@ -39,6 +39,7 @@ Redis从2.8版本正式提供了高可用实现Redis Sentinel。它能够保证R
 * [`[基础]` 字典](../sections/redis-字典.md)
 * [`[基础]` skipList](../sections/redis-skipList.md)
 * [`[基础]` 字典](../sections/redis-字典.md)
+* [`[基础]` 整数集合](../sections/redis-intset.md)
 * [`[基础]` 压缩列表](../sections/redis-压缩列表.md)
 
 # 对象

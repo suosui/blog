@@ -1,6 +1,6 @@
 # Redis
 
-* [`[基础]` 特性](../sections/Redis.md#持久化)
+* [`[基础]` 特性](../sections/Redis.md#特性)
 * [`[基础]` 使用场景](../sections/Redis.md#使用场景)
 * [`[基础]` 底层](../sections/Redis.md#底层)
 * [`[基础]` 对象](../sections/Redis.md#对象)

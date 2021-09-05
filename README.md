@@ -1,1 +1,1 @@
-# [入口](https://github.com/suosui/blog/blob/master/docs/README.md)
+# [入口](https://github.com/suosui/blog/tree/master/docs)

@@ -1,4 +1,4 @@
-![ElemeFE-background](./assets/nodejs.png)
+![background](./assets/bg.png)
 
 # Node.js总结
 

@@ -1,11 +1,11 @@
 # Redis
 
-* [`[基础]` 特性](../../master/docs/sections/Redis.md#持久化)
-* [`[基础]` 使用场景](../../master/docs/sections/Redis.md#使用场景)
-* [`[基础]` 底层](../../master/docs/sections/Redis.md#底层)
-* [`[基础]` 对象](../../master/docs/sections/Redis.md#对象)
-* [`[基础]` 主从复制](../../master/docs/sections/Redis.md#主从复制)
-* [`[中级]` 持久化](../../master/docs/sections/Redis.md#持久化)
+* [`[基础]` 特性]((../sections/Redis.md#持久化)
+* [`[基础]` 使用场景]((../sections/Redis.md#使用场景)
+* [`[基础]` 底层]((../sections/Redis.md#底层)
+* [`[基础]` 对象]((../sections/Redis.md#对象)
+* [`[基础]` 主从复制]((../sections/Redis.md#主从复制)
+* [`[中级]` 持久化]((../sections/Redis.md#持久化)
 
 # 特性
 ### 【速度快】
@@ -27,23 +27,23 @@
 ### 【持久化】
 * 通常看，将数据放在内存中是不安全的，一旦发生断电或者机器故障，重要的数据可能就会丢失，因此Redis提供了两种持久化的方式：[RDB]()和[AOF](),即可以用两种策略将内存的数据保存到硬盘中。这样就保证了持久性。
 ### 主从复制
-Redis提供了[复制功能](../../master/docs/sections/Redis.md#主从复制)，实现了多个相同数据的副本，复制功能是分布式Redis的基础。
+Redis提供了[复制功能]((../sections/Redis.md#主从复制)，实现了多个相同数据的副本，复制功能是分布式Redis的基础。
 ### 高可用和分布式
 Redis从2.8版本正式提供了高可用实现Redis Sentinel。它能够保证Redis节点的故障发现和故障自动转移。Redis从3.0版本正式提供了分布式实现Redis Cluster,它是Redis真正的分布式实现，提供了高可用，读写和容量的扩展性。
 # 使用场景
 
 # 底层
 
-* [`[基础]` SDS](../../master/docs/sections/redis-SDS.md)
-* [`[基础]` List](../../master/docs/sections/redis-List.md)
-* [`[基础]` 字典](../../master/docs/sections/redis-字典.md)
-* [`[基础]` skipList](../../master/docs/sections/redis-skipList.md)
-* [`[基础]` 字典](../../master/docs/sections/redis-字典.md)
-* [`[基础]` 压缩列表](../../master/docs/sections/redis-压缩列表.md)
+* [`[基础]` SDS]((../sections/redis-SDS.md)
+* [`[基础]` List]((../sections/redis-List.md)
+* [`[基础]` 字典]((../sections/redis-字典.md)
+* [`[基础]` skipList]((../sections/redis-skipList.md)
+* [`[基础]` 字典]((../sections/redis-字典.md)
+* [`[基础]` 压缩列表]((../sections/redis-压缩列表.md)
 
 # 对象
 
-* [`[基础]` 介绍](../../master/docs/sections/redis-对象.md)
+* [`[基础]` 介绍]((../sections/redis-对象.md)
 
 # 复制
 # 哨兵

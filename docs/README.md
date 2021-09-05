@@ -11,9 +11,9 @@
 
 > 因为有了Node.js，JavaScript也被视为一种服务端语言。
 
-* [`[基础]` 类型判断](../../master/docs/sections/Js.md#类型判断)
-* [`[基础]` 作用域](../../master/docs/sections/Js.md#作用域)
-* [`[基础]` ES6 新特性](../../master/docs/sections/Js.md#ES6新特性)
+* [`[基础]` 类型判断](../../master/docs/sections/js/Js.md#类型判断)
+* [`[基础]` 作用域](../../master/docs/sections/js/Js.md#作用域)
+* [`[基础]` ES6 新特性](../../master/docs/sections/js/Js.md#ES6新特性)
 
 **常见问题**
 

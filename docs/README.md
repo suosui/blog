@@ -1,3 +1,5 @@
+![ElemeFE-background](./assets/nodejs.png)
+
 # Node.js总结
 
 ## 导读

@@ -45,7 +45,7 @@ enum encoding {
     REDIS_ENCODING_INT         // long 类型的整数
     REDIS_ENCODING_EMBSTR      // embstr编码的动态字符串
     REDIS_ENCODING_RAW         // 简单动态字符串
-    REDIS_ENDCODING_HT         // 自带你
+    REDIS_ENDCODING_HT         // 字典
     REDIS_ENCODING_LINKEDLIST  // 双端列表
     REDIS_ENCODING_ZIPLIST     // 压缩列表
     REDIS_ENCODING_INTSET      // 整数集合

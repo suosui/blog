@@ -36,7 +36,7 @@
 [阅读更多](../../master/docs/sections/nodejs/Nodejs.md)
 
 
-## [Redis](../../master/docs/sections/nodejs/Nodejs.md)
+## [Redis](../../master/docs/sections/redis/Redis.md)
 
 > redis远比你想象的强大的多！
 

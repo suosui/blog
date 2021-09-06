@@ -1,9 +1,7 @@
 # 介绍
 列表对象的编码可以是ziplist或者linkedlist。
 
-ziplist编码的列表对象使用压缩列表作为底层实现，每个压缩列表节点（entry）保存了
-一个列表元素。举个例子，如果我们执行以下RPUSH命令，那么服务器将创建一个列表对象
-作为numbers键的值：
+ziplist编码的列表对象使用压缩列表作为底层实现，每个压缩列表节点（entry）保存了一个列表元素。举个例子，如果我们执行以下RPUSH命令，那么服务器将创建一个列表对象作为numbers键的值：
 
 ```shell
 redis> RPUSH numbers 1 "three" 5

@@ -40,9 +40,33 @@ typeof 42 首先返回字符串 "number"，然后 typeof "number" 返回 "string
 ```
 typeof伪代码 [ECMA-262](https://tc39.es/ecma262/)
 ```javascript
-1. Let val be the result of evaluating UnaryExpression.                    // typeof是一元运算符，所以
-2. If val is a Reference Record, then
-       a. If IsUnresolvableReference(val) is true, return "undefined".
-3. Set val to ? GetValue(val).
-4. Return a String according to Table 37.
+1. Let val be the result of evaluating UnaryExpression.// typeof是一元运算符，所以
+2. If val is a Reference Record, then // 如果val是引用类型                                   
+       a. If IsUnresolvableReference(val) is true, return "undefined". // 如果没有被定义返回 ”undefined“
+3. Set val to ? GetValue(val). // 通过GetValue返回一个String。
+4. Return a String according to Table //根据GetValue返回的String 和 Table返回Result
+```
+```
+                     ┌───────────────────────────────────┐─────────────┐
+                     │          Type of val              │    Result   |
+                     |───────────────────────────────────|─────────────|
+                     │ Undefined                         │ "undefined" |
+                     |───────────────────────────────────|─────────────|
+                     │ Null                              │ "object"    |
+                     |───────────────────────────────────|─────────────|
+                     │ Boolean                           │ "boolean"   |
+                     |───────────────────────────────────|─────────────|
+                     │ Number                            │ "number"    |
+                     |───────────────────────────────────|─────────────|
+                     │ String                            │ "string"    |
+                     |───────────────────────────────────|─────────────|
+                     │ Symbole                           │ "symbol"    |
+                     |───────────────────────────────────|─────────────|
+                     | BigInt                            | "bigint"    |
+                     |───────────────────────────────────|─────────────|
+                     │ Object(does not implement[[Call]])│ "object"    |
+                     |───────────────────────────────────|─────────────|
+                     │ Object (implements [[Call]])      │ "function"  |
+                     └───────────────────────────────────┘─────────────┘
+                                             Table
 ```

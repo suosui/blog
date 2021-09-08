@@ -16,12 +16,33 @@ JavaScript 有七种内置类型：
 
 除对象之外，其他统称为“基本类型”。我们可以用typeof运算符来查看值的类型，它返回的是类型的字符串值。
 ```javascript
-typeof undefined    === 'undefined'; // true;
-typeof true         === 'boolean';   // true;
-typeof 42           === 'number';    // true
-typeof "42"         === 'string';    // true
-typeof { life: 42 } === 'object';    // true
+1 typeof undefined    === 'undefined'; // true;
+2 typeof true         === 'boolean';   // true;
+3 typeof 42           === 'number';    // true
+4 typeof "42"         === 'string';    // true
+5 typeof { life: 42 } === 'object';    // true
 
 // ES6中新加如的类型
-typeof Symbol()     === 'symbol';    // true
+6 typeof Symbol()     === 'symbol';    // true
+
+typeof null         === "object";    // true 
+//正确的返回结果应该是 "null"，但这个 bug 由来已久，在 JavaScript 中已经存在了将近二十年，也许永远也不会修复，因为这牵涉到太多的 Web 系统，“修复”它会产生更多的bug，令许多系统无法正常工作。
+// 我们需要使用复合条件来检测 null 值的类型：
+var a = null;
+7 (!a && typeof a === "object"); // true
+
+8 typeof function a(){ /* .. */ } === "function"; // true
+```
+typeof 运算符总是会返回一个字符串：   
+```javascript
+typeof 42 // string
+typeof 42 首先返回字符串 "number"，然后 typeof "number" 返回 "string"。
+```
+typeof伪代码 [ECMA-262](https://tc39.es/ecma262/)
+```javascript
+1. Let val be the result of evaluating UnaryExpression.                    // typeof是一元运算符，所以
+2. If val is a Reference Record, then
+       a. If IsUnresolvableReference(val) is true, return "undefined".
+3. Set val to ? GetValue(val).
+4. Return a String according to Table 37.
 ```

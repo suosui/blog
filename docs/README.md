@@ -18,7 +18,7 @@
 **常见问题**
 
 
-[阅读更多](../../master/docs/sections/js/JS.md)
+[阅读更多](../../master/docs/sections/js/Js.md)
 
 
 ## [Node.js 基础](../../master/docs/sections/nodejs/Nodejs.md)

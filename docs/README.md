@@ -13,6 +13,7 @@
 
 * [`[基础]` 类型判断](../../master/docs/sections/js/Js.md#类型判断)
 * [`[基础]` 作用域](../../master/docs/sections/js/Js.md#作用域)
+* [`[基础]` 异步](../../master/docs/sections/js/Js.md#异步)
 * [`[基础]` ES6 新特性](../../master/docs/sections/js/Js.md#ES6新特性)
 
 **常见问题**

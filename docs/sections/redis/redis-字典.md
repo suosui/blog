@@ -31,7 +31,7 @@ typedef struct dict {//字典
     dictht ht[2];   // 哈希表
     int rehashidx;  // rehas索引 当rehash不进行时，值为-1
 } dict;
-//type属性和privdata属性是针对不同类型的键值对，为创建多态字典而设置的。type属性是一个指向dictType结构的指针，每个dictType结构保存了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置不同的类型特定函数。
+// type属性和privdata属性是针对不同类型的键值对，为创建多态字典而设置的。type属性是一个指向dictType结构的指针，每个dictType结构保存了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置不同的类型特定函数。
 // 而privdata属性则保存了需要传给那些类型特定函数的可选参数。
 // ht属性是一个包含两个项的数组，数组中的每个项都是一个dictht哈希表，一般情况下，字典只使用ht[0]哈希表，ht[1]哈希表只会在对ht[0]哈希表进行rehash时使用。
 // 除了ht[1]之外，另一个和rehash有关的属性就是rehashidx，它记录了rehash目前的进度，如果目前没有在进行rehash，那么它的值为-1。

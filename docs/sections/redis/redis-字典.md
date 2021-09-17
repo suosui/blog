@@ -7,7 +7,9 @@ typedef struct dictht {//哈希表
                             // 总是等于size-1
     unsigned long used;     // 该哈希表已有节点的数量
 }
-// table属性是一个数组，数组中的每个元素都是一个指向dictEntry结构的指针，每个dictEntry结构保存着一个键值对。size属性记录了哈希表的大小，也即是table数组的大小，而used属性则记录了哈希表目前已有节点（键值对）的数量。sizemask属性的值总是等于size1，这个属性和哈希值一起决定一个键应该被放到table数组的哪个索引上面。
+// table属性是一个数组，数组中的每个元素都是一个指向dictEntry结构的指针，每个dictEntry结构保存着一个键值对。
+// size属性记录了哈希表的大小，也即是table数组的大小，而used属性则记录了哈希表目前已有节点（键值对）的数量。
+// sizemask属性的值总是等于size1，这个属性和哈希值一起决定一个键应该被放到table数组的哪个索引上面。
 ```
 ```c
 typedef struct dictEntry {//哈希表节点
@@ -19,7 +21,8 @@ typedef struct dictEntry {//哈希表节点
     } v;
     struct dictEntry *next;    // 指向下个哈希表节点，形成链表
 } dictEntry;
-// key属性保存着键值对中的键，而v属性则保存着键值对中的值，其中键值对的值可以是一个指针，或者是一个uint64_t整数，又或者是一个int64_t整数。next属性是指向另一个哈希表节点的指针，这个指针可以将多个哈希值相同的键值对连接在一次，以此来解决键冲突（collision）的问题。
+// key属性保存着键值对中的键，而v属性则保存着键值对中的值，其中键值对的值可以是一个指针，或者是一个uint64_t整数，又或者是一个int64_t整数。
+// next属性是指向另一个哈希表节点的指针，这个指针可以将多个哈希值相同的键值对连接在一次，以此来解决键冲突（collision）的问题。
 ```
 ```c
 typedef struct dict {//字典
@@ -28,7 +31,10 @@ typedef struct dict {//字典
     dictht ht[2];   // 哈希表
     int rehashidx;  // rehas索引 当rehash不进行时，值为-1
 } dict;
-//type属性和privdata属性是针对不同类型的键值对，为创建多态字典而设置的。type属性是一个指向dictType结构的指针，每个dictType结构保存了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置不同的类型特定函数。而privdata属性则保存了需要传给那些类型特定函数的可选参数。ht属性是一个包含两个项的数组，数组中的每个项都是一个dictht哈希表，一般情况下，字典只使用ht[0]哈希表，ht[1]哈希表只会在对ht[0]哈希表进行rehash时使用。除了ht[1]之外，另一个和rehash有关的属性就是rehashidx，它记录了rehash目前的进度，如果目前没有在进行rehash，那么它的值为-1。
+//type属性和privdata属性是针对不同类型的键值对，为创建多态字典而设置的。type属性是一个指向dictType结构的指针，每个dictType结构保存了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置不同的类型特定函数。
+// 而privdata属性则保存了需要传给那些类型特定函数的可选参数。
+// ht属性是一个包含两个项的数组，数组中的每个项都是一个dictht哈希表，一般情况下，字典只使用ht[0]哈希表，ht[1]哈希表只会在对ht[0]哈希表进行rehash时使用。
+// 除了ht[1]之外，另一个和rehash有关的属性就是rehashidx，它记录了rehash目前的进度，如果目前没有在进行rehash，那么它的值为-1。
 ```
 ```c
 typedef struct dictType {

@@ -35,7 +35,11 @@ while (true) {
 
  设想一个调度任务（直接地，不要 `hack`）的 `API`，称其为 `schedule(..)`。考虑：
  ```javascript
- console.log("A");
+function schedule(callback) {
+    callback();
+};
+
+console.log("A");
 setTimeout(function () {
     console.log("B");
 }, 0);
@@ -44,8 +48,14 @@ schedule(function () {
     console.log("C");
     schedule(function () {
         console.log("D");
+        schedule(function () {
+            console.log("E");
+            schedule(function () {
+                console.log("F");
+            });
+        });
     });
 });
  ```
 
- 可能你认为这里会打印出 `A B C D`，但实际打印的结果是 `A C D B`。因为任务处理是在当前事件循环 `tick` 结尾处，且定时器触发是为了调度下一个事件循环 `tick`（如果可用的话！）。
+ 可能你认为这里会打印出 `A B C D E F`，但实际打印的结果是 `A C D E F B`。因为任务处理是在当前事件循环 `tick` 结尾处，且定时器触发是为了调度下一个事件循环 `tick`（如果可用的话！）。

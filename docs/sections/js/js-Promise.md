@@ -320,3 +320,8 @@ p.then(function () {
     }
 });
 ```
+
+## 手写Promise
+
+* [从一道让我失眠的 Promise 面试题开始，深入分析 Promise 实现细](https://developers.weixin.qq.com/community/develop/article/doc/0006a2372a8a7083faeb1366951c13)
+* [Promise/A+](https://promisesaplus.com/)

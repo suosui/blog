@@ -50,3 +50,8 @@
 **常见问题**
 
 * 为什么用Redis? [[更多]](../../master/docs/sections/redis/Redis.md#Redis特性)
+
+
+## [数据结构与算法](../../master/docs/sections/dataStrucure&algorithm/D&A.md)
+
+* [`[基础]` 链表](../../master/docs/sections/dataStrucure&algorithm/d&a-list.md#链表)

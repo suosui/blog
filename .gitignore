@@ -4,3 +4,7 @@ node_modules
 # vscode
 .vscode
 launch.json
+
+# code
+code/dataStructureAndAlgorithm/*/*.js
+code/dataStructureAndAlgorithm/*.js

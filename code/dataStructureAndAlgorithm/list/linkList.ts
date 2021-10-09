@@ -74,6 +74,25 @@ export class LinkList {
         this.end = this.begin;
         this.begin = tmp;
     }
+
+    /**
+     * 反转- 递归
+     */
+
+    reverseWithRecrusion(current: LItem) {
+        if (!current || !current.next) {
+            let tmp = this.end;
+            this.end = this.begin;
+            this.begin = tmp;
+            return current;
+        }
+        this.reverseWithRecrusion(current.next);
+        current.next.next = current;
+        current.next.previous = current.next.next.next;
+        current.next = null;
+        current.previous = null;
+        return;
+    }
 }
 
 export class LItem {

@@ -8,3 +8,9 @@ launch.json
 # code
 code/dataStructureAndAlgorithm/*/*.js
 code/dataStructureAndAlgorithm/*.js
+
+# 
+interview.ts
+
+# 
+out

@@ -6,8 +6,8 @@ node_modules
 launch.json
 
 # code
-code/dataStructureAndAlgorithm/*/*.js
-code/dataStructureAndAlgorithm/*.js
+code/算法/*/*.js
+code/算法/*.js
 
 # 
 interview.ts

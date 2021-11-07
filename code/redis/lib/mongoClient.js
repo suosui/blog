@@ -22,6 +22,7 @@ const connectDB = async () => {
         return client.db(dbConfig.dbname).collection(name);
       }
     }
+    console.log(`Mongodb链接成功`);
     return db;
   } catch (e) {
     console.error(e);

@@ -1,3 +1,4 @@
+const util = require('./util');
 const redis = require("redis"),
     client = redis.createClient();
 
@@ -54,7 +55,7 @@ const setNx = (key, value, expire) => {
 }
 
 const getLock = async (key) => {
-    const clienId = Math.random() * 100; //模拟客户端Id
+    const clienId = Math.random() * 10000; //模拟客户端Id
     try {
         const result = await setNx(key, clienId, 10); //防止死锁,10秒
         if (result === 'OK') {
@@ -83,6 +84,19 @@ const delLock = async (key, clienId) => {
 }
 
 
+const getSegLock = async (keys, hash, timeout = 0) => {
+    if (!timeout) timeout = Date.now() + 100;
+    if (timeout < Date.now) {
+        return;
+    }
+    if (!hash) hash = util.getRandomArbitrary(0, keys.length - 1);
+    let clientId = await getLock(`${keys[hash]}`);
+    if (!clientId) {
+        return await getSegLock(keys, hash, timeout);
+    }
+    return { clientId, key: keys[hash] };
+}
+
 module.exports = {
     setKey,
     getKey,
@@ -90,4 +104,5 @@ module.exports = {
     delKey,
     getLock,
     delLock,
+    getSegLock,
 };

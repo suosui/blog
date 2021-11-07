@@ -7,7 +7,7 @@
 此文档记录了我做为Node.js工程师在工作中或学习中遇到的问题和知识进行了总结。    
 此文档排版借鉴了 [饿了么](https://github.com/ElemeFE/node-interview/tree/master/sections/zh-cn)
 
-## [Js 基础](../../master/docs/sections/js/Js.md)
+## [Js](../../master/docs/sections/js/Js.md)
 
 > 因为有了Node.js，JavaScript也被视为一种服务端语言。
 
@@ -22,7 +22,7 @@
 [阅读更多](../../master/docs/sections/js/Js.md)
 
 
-## [Node.js 基础](../../master/docs/sections/nodejs/Nodejs.md)
+## [Node.js](../../master/docs/sections/nodejs/Nodejs.md)
 
 > Node.js作为JavaScript在浏览器外运行时，其自身“单线程”的特性作为微服务解决方案的不二人选。
 

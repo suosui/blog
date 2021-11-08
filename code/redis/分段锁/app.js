@@ -7,7 +7,7 @@ const redis = require('../lib/redisClient');
 const mongo = require('../lib/mongoClient');
 const logger = require("../lib/logger").logger();
 
-const app = express()
+const app = express();
 const port = 3000;
 const preKey = 'carleft_';
 const dividedRedisKeys = [];
@@ -155,7 +155,7 @@ const getLeft = async () => {
     let leftTotal = 0;
     for (let key of dividedRedisKeys) {
         cars = await db.collection('inventorys_sub').findOne({ _id: key });
-        leftTotal += cars.left
+        leftTotal += cars.left;
     }
     return leftTotal;
 }

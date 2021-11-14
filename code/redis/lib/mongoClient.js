@@ -2,9 +2,9 @@ const { MongoClient } = require('mongodb');
 const blubird = require('bluebird')
 
 const dbConfig = {
-  connectionString: process.env.DB_STRING || 'mongodb://127.0.0.1:27017/local',
+  connectionString: process.env.DB_STRING || 'mongodb://127.0.0.1:27017/test',
   connectHost: process.env.DB_HOST || 'mongodb://127.0.0.1:27017',
-  dbname: process.env.DB_NAME || 'local',
+  dbname: process.env.DB_NAME || 'test',
   username: process.env.DB_USERNAME || '',
   password: process.env.DB_PASSWORD || '',
 }

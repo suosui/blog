@@ -18,7 +18,7 @@ let reqCnt = 0;
  */
 const init = async () => {
   db = await mongo.connectDB();
-  await initCarLeft();
+  await initShoseLeft();
   logger.info(`app listening at http://localhost:${port}`);
 }
 
@@ -77,8 +77,8 @@ const cutShose = async () => {
 }
 
 
-const initCarLeft = async () => {
-  await db.collection('inventorys').updateOne({ _id: 'shose' }, { $set: { left: 10000 } });
+const initShoseLeft = async () => {
+  await db.collection('inventorys').updateOne({ _id: 'shose' }, { $set: { left: 10000 } }, { upsert: true });
 }
 
 

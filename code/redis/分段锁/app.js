@@ -124,7 +124,7 @@ const cutCarsLeft = async (redisKey, cut) => {
 const dividCarsLeft = async () => {
     try {
         // 获取整体库存
-        await db.collection('inventorys').updateOne({ _id: 'cars' }, { $set: { left: 100000 } });
+        await db.collection('inventorys').updateOne({ _id: 'cars' }, { $set: { left: 100000 } }, { upsert: true });
         const cars = await db.collection('inventorys').findOne({ _id: 'cars' });
         const gap = 1000;
         let i = 1;

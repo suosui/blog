@@ -63,7 +63,7 @@ Redis从2.8版本正式提供了高可用实现Redis Sentinel。它能够保证R
 * [`[基础]` AOF持久化](./redis-AOF持久化.md)
 
 # 复制
-* [`[基础]` RDB持久化](./redis-复制.md)
+* [`[基础]` 复制](./redis-复制.md)
 
 # 哨兵
 

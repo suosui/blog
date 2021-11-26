@@ -58,14 +58,12 @@
 
 * [`[基础]` 索引](../../master/docs/sections/mysql/Mysql.md#索引)
 * [`[基础]` Explain](../../master/docs/sections/mysql/Mysql.md#Explain)
-* [`[基础]` BufferPool](../../master/docs/sections/mysql/Mysql.md#BufferPool)
-* [`[基础]` 事务](../../master/docs/sections/mysql/Mysql.md#事务)
-* [`[基础]` redo日志](../../master/docs/sections/mysql/Mysql.md#redo日志)
-* [`[基础]` undo日志](../../master/docs/sections/mysql/Mysql.md#undo日志)
-* [`[基础]` MVCC](../../master/docs/sections/mysql/Mysql.md#MVCC)
-* [`[基础]` 锁](../../master/docs/sections/mysql/Mysql.md#锁)
+
+
 
 * [更多](../../master/docs/sections/mysql/Mysql.md)
+
+
 
 ## [数据结构与算法](../../master/docs/sections/dataStructure&algorithm/D&A.md)
 

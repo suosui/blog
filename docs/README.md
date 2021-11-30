@@ -71,4 +71,4 @@
 
 ## 其他
 
-* [`[高阶]` 多路复用](../../master/docs/sections/order/多路复用.md)
+* [`[高阶]` 多路复用](../../master/docs/sections/other/多路复用.md)

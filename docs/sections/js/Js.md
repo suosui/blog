@@ -31,3 +31,6 @@
 * [`[基础]` Promise](./js-Promise.md)
 * [`[基础]` Generator](./js-Generator.md)
 ## ES6新特性
+
+## 其他
+* [`[基础]` new和ObjectCreate](./new和ObjectCreate.md)

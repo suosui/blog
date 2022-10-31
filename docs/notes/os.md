@@ -8,8 +8,3 @@ lsof -i 端口号                # ubuntu,macos
 ```shell
 scp -r root@远程ip:/root/file.zip ~/Repository/db/
 ```
-
-### 2. 从远程下载文件
-```shell
-scp -r root@远程ip:/root/file.zip ~/Repository/db/
-```

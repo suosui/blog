@@ -11,5 +11,5 @@ scp -r root@远程ip:/root/file.zip ~/Repository/db/
 
 ### 3. 显示文件夹信息
 ```shell
-alias ll='ls -lG'
+alias ll='ls -lG' # macos
 ```

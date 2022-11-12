@@ -14,4 +14,7 @@ kubectl -n hpaas logs -f 容器id                     # 打印容器日志
 kubectl -n hpaas logs 容器id | grep "2022-10-27"    # 过滤日志
 ```
 
-
+### 4. pod 详细信息
+```shell
+kubectl -n hpaas describe pod podId
+```

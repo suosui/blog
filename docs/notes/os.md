@@ -13,3 +13,8 @@ scp -r root@远程ip:/root/file.zip ~/Repository/db/
 ```shell
 alias ll='ls -lG' # macos
 ```
+
+### 4. 采集系统资源信息
+```shell
+vmstat 2
+```

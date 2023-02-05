@@ -17,9 +17,9 @@ let reqCnt = 0;
  * 初始化函数
  */
 const init = async () => {
-  db = await mongo.connectDB();
-  await initShoseLeft();
-  logger.info(`app listening at http://localhost:${port}`);
+    db = await mongo.connectDB();
+    await initShoseLeft();
+    logger.info(`app listening at http://localhost:${port}`);
 }
 
 /**
@@ -32,32 +32,32 @@ app.listen(port, init);
  * 比如：我们要削减的是某个鞋子的库存
  */
 app.get('/shose/cut', async (req, res) => {
-  reqCnt++;
-  const reqCntTmp = reqCnt;
-  try {
-    // 1 获取分布式锁
-    logger.info({ reqCnt: reqCntTmp, aciton: '上锁' });
-    const clientId = await redis.getLock(shoseLeftRedisKey);
-    if (clientId) {
-      logger.info({ reqCnt: reqCntTmp, aciton: '上锁成功' });
-      // 2 业务代码
-      const left = await cutShose().catch(e => { console.log(e) });
-      if (!left) {
-        // 3 释放锁
-        await redis.delLock(shoseLeftRedisKey, clientId);
-        return res.send(`cars cuts failed`);
-      }
-      // 3 释放锁
-      logger.info({ reqCnt: reqCntTmp, aciton: '释放锁' });
-      await redis.delLock(shoseLeftRedisKey, clientId);
-      return res.send(`${left}`);
+    reqCnt++;
+    const reqCntTmp = reqCnt;
+    try {
+        // 1 获取分布式锁
+        logger.info({ reqCnt: reqCntTmp, aciton: '上锁' });
+        const clientId = await redis.getLock(shoseLeftRedisKey);
+        if (clientId) {
+            logger.info({ reqCnt: reqCntTmp, aciton: '上锁成功' });
+            // 2 业务代码
+            const left = await cutShose().catch(e => { console.log(e) });
+            if (!left) {
+                // 3 释放锁
+                await redis.delLock(shoseLeftRedisKey, clientId);
+                return res.send(`cars cuts failed`);
+            }
+            // 3 释放锁
+            logger.info({ reqCnt: reqCntTmp, aciton: '释放锁' });
+            await redis.delLock(shoseLeftRedisKey, clientId);
+            return res.send(`${left}`);
+        }
+        logger.info(`cars cuts failed`)
+        res.send(`cars cuts failed`);
+    } catch (e) {
+        logger.error(e);
+        res.send(`cars cuts failed`);
     }
-    logger.info(`cars cuts failed`)
-    res.send(`cars cuts failed`);
-  } catch (e) {
-    logger.error(e);
-    res.send(`cars cuts failed`);
-  }
 });
 
 /**
@@ -65,20 +65,20 @@ app.get('/shose/cut', async (req, res) => {
  * @returns 
  */
 const cutShose = async () => {
-  const shose = await db.collection('inventorys').findOne({ _id: 'shose' });
-  if (shose.left) {
-    shose.left += -1;
-    let { matchedCount } = await db.collection('inventorys').updateOne({ _id: 'shose' }, { $set: { left: shose.left } });
-    if (matchedCount) {
-      logger.info({ left: shose.left });
-      return shose.left;
+    const shose = await db.collection('inventorys').findOne({ _id: 'shose' });
+    if (shose.left) {
+        shose.left += -1;
+        let { matchedCount } = await db.collection('inventorys').updateOne({ _id: 'shose' }, { $set: { left: shose.left } });
+        if (matchedCount) {
+            logger.info({ left: shose.left });
+            return shose.left;
+        }
     }
-  }
 }
 
 
 const initShoseLeft = async () => {
-  await db.collection('inventorys').updateOne({ _id: 'shose' }, { $set: { left: 10000 } }, { upsert: true });
+    await db.collection('inventorys').updateOne({ _id: 'shose' }, { $set: { left: 10000 } }, { upsert: true });
 }
 
 

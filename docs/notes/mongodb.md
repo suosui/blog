@@ -28,3 +28,8 @@ systemctl restart mongod
 ```shell
 mongo ip -u bridata -p
 ```
+
+### 7. 从库开放查询权限
+```shell
+rs.secondaryOk()
+```

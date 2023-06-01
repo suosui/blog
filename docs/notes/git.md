@@ -59,6 +59,12 @@ git branch -d 分支名
 git push origin --delete 分支名
 ```
 
+### git bisect
+```
+git bisect start [终点] [起点]  # 例子：git bisect start HEAD 4d83cf
+git bisect good/bad
+```
+
 ### git wiki 上传图片
 ```shell
 git clone https://github.com/suosui/blog.wiki.git

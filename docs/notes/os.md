@@ -18,3 +18,7 @@ alias ll='ls -lG' # macos
 ```shell
 vmstat 2
 ```
+### 5. 查找文件
+```shell
+find / -name filename
+```

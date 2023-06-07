@@ -22,3 +22,8 @@ vmstat 2
 ```shell
 find / -name filename
 ```
+
+### 6. 更改文件夹权限
+```shell
+sudo chown -R a:b /path/to/directory
+```

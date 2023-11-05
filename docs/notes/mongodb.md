@@ -26,7 +26,8 @@ systemctl restart mongod
 
 ### 6. 连接远程
 ```shell
-mongo ip -u bridata -p
+mongo ip -u userName -p
+mongo -host 127.0.0.1:6230 -u userName -p
 ```
 
 ### 7. 从库开放查询权限

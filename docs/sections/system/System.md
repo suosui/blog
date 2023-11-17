@@ -1,8 +1,7 @@
 # 系统
 
-* [`[基础]` 虚拟化](./System.md#虚拟化))  
-&nbsp;&nbsp;* [`[基础]` 虚拟化](./System.md#虚拟化)    
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* [`[基础]` 进程](./操作系统导论.第四章.进程.读书笔记.md#操作系统导论.第四章.进程)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* [`[基础]` 进程API](./操作系统导论.第五章.进程API.读书笔记.md#第五章进程API)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* [`[基础]` 受限直接执行](./操作系统导论.第六章.机制:受限直接执行.读书笔记.md#第六章机制：受限直接执行)  
-&nbsp;&nbsp;* [`[基础]` 并发](./System.md#并发)
+* [`[基础]` 虚拟化](./System.md#虚拟化)   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* [`[基础]` 进程](./操作系统导论.第四章.进程.读书笔记.md#操作系统导论.第四章.进程)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* [`[基础]` 进程API](./操作系统导论.第五章.进程API.读书笔记.md#第五章进程API)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* [`[基础]` 受限直接执行](./操作系统导论.第六章.机制:受限直接执行.读书笔记.md#第六章机制：受限直接执行)  
+* [`[基础]` 并发](./System.md#并发)

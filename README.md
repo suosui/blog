@@ -1,4 +1,4 @@
-![background](./assets/bg.png)
+![background](./docs//assets/bg.png)
 
 # Node.js总结
 

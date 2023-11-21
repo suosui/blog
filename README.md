@@ -82,6 +82,11 @@
 * [`[基础]` 虚拟化](../master/docs/sections/system/System.md)
 * [`[基础]` 并发](../master/docs/sections/system/System.md)
 
+## [GC垃圾回收](../master/docs/sections/net/GC.md)
+
+* [`[基础]` 概念](../master/docs/sections/gc/Concept.md)
+* [`[基础]` 标记-清除算法](../master/docs/sections/gc/Mark-Sweep.md)
+
 
 ## 其他
 

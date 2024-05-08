@@ -18,3 +18,8 @@ kubectl -n hpaas logs 容器id | grep "2022-10-27"    # 过滤日志
 ```shell
 kubectl -n hpaas describe pod podId
 ```
+
+### 4. 强制删除pod
+```shell
+kubectl -n hpaas delete pod 容器id --force --grace-period=0
+```

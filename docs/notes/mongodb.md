@@ -34,3 +34,17 @@ mongo -host 127.0.0.1:6230 -u username -p
 ```shell
 rs.secondaryOk()
 ```
+
+### 8. show collections size
+```javascript
+var collectionNames = db.getCollectionNames(),
+  stats = [];
+collectionNames.forEach(function (n) {
+  stats.push(db[n].stats());
+});
+for (var c in stats) {
+  // skip views
+  if (!stats[c]["ns"]) continue;
+  print(stats[c]["ns"].padEnd(40) + ": " + (''+stats[c]["size"]).padEnd(12) + " (" + (stats[c]["storageSize"] / 1073741824).toFixed(3).padStart(8) + "GB)");
+}
+```

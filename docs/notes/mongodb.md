@@ -48,3 +48,20 @@ for (var c in stats) {
   print(stats[c]["ns"].padEnd(40) + ": " + (''+stats[c]["size"]).padEnd(12) + " (" + (stats[c]["storageSize"] / 1073741824).toFixed(3).padStart(8) + "GB)");
 }
 ```
+
+### 9. 登录副本集
+```shell
+mongo "mongodb://primary-host:27017/?replicaSet=副本集名称"
+
+```
+or
+
+```shell
+mongo --host 副本集名称/host1:port1,host2:port2,host3:port3,host4:port4
+```
+
+
+### 10. 获取副本集状态
+```shell
+rs.status()
+```

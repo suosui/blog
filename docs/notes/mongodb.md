@@ -10,8 +10,15 @@ db.serverStatus().connections
 
 ### 3. 慢查询
 ```javascript
+use test  // 选择数据库;
 db.setProfilingLevel(2) // 设置日志级别
 db.system.profile.find({"ns" : {$nin:["test.oplog.rs","test.system.profile"]},}).limit(5).sort( { ts : -1 } ).pretty()
+
+db.collection.getIndexes() // 获取索引
+db.collection.createIndex({ username: 1 }, { unique: true }) // 创建索引
+
+db.db.currentOp() // 查看当前操作
+db.killOp(opid) // 杀死慢查询
 ```
 
 ### 4. 操作日志

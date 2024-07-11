@@ -72,3 +72,4 @@ mongo --host 副本集名称/host1:port1,host2:port2,host3:port3,host4:port4
 ```shell
 rs.status()
 ```
+

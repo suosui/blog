@@ -3,15 +3,42 @@
 [【后】Redis-List](./redis-List.md)
 ### 数据结构
 ``` c
-struct sdshdr {
-    int len;        // 记录buf数组中字节的数量
-                    // 等于SDS所保存字符串的长度
+typedef char *sds;
 
-    int free;       // 记录buf数组中未使用字节的数量
-
-    char buf[];     // 字节数组，用于保存字符串
-}
+struct __attribute__ ((__packed__)) sdshdr5 {
+    unsigned char flags; /* 8位，低三位用来表示字符串的类型, 其他5位表示buf实际用到的字节数 */
+    char buf[];
+};
+struct __attribute__ ((__packed__)) sdshdr8 {
+    uint8_t len; /* buf实际用了多少字节 */
+    uint8_t alloc; /* 实际分配了多少字节 */
+    unsigned char flags; /* 8位，低三位用来表示字符串的类型, 其他5位未被使用 */
+    char buf[];
+};
+struct __attribute__ ((__packed__)) sdshdr16 {
+    uint16_t len; /* buf实际用了多少字节 */
+    uint16_t alloc; /* 实际分配了多少字节 */
+    unsigned char flags; /* 8位，低三位用来表示字符串的类型, 其他5位未被使用 */
+    char buf[];
+};
+struct __attribute__ ((__packed__)) sdshdr32 {
+    uint32_t len; /* buf实际用了多少字节 */
+    uint32_t alloc; /* 实际分配了多少字节 */
+    unsigned char flags; /* 8位，低三位用来表示字符串的类型, 其他5位未被使用 */
+    char buf[];
+};
+struct __attribute__ ((__packed__)) sdshdr64 {
+    uint64_t len; /* buf实际用了多少字节 */
+    uint64_t alloc; /* 实际分配了多少字节 */
+    unsigned char flags; /* 8位，低三位用来表示字符串的类型, 其他5位未被使用 */
+    char buf[];
+};
 ```
+:question: 为什么有5,8,16,32,64这几种类型的结构体？   
+:key: 为了节省内存。对于redis内存是非常宝贵的，要尽量的节省内存。因为C语言中int有不同的长度，有的是1个字节（8位），有的是2个字节（16位），有的是4个字节（32位），有的是8个字节（64位），所以根据buf的长度来选择合适的结构体。
+:question: 为什么要用__attribute__ ((__packed__))?
+:key: 为了防止编译器对结构体进行优化, 内存对齐。
+
 ### 特性
 * 空间预分配
 ```

@@ -8,7 +8,7 @@ typedef char *sds;
 /* Note: sdshdr5 is never used, we just access the flags byte directly.
  * However is here to document the layout of type 5 SDS strings. */
 struct __attribute__ ((__packed__)) sdshdr5 {
-    unsigned char flags[^1]; /* 8位，低三位用来表示字符串的类型, 其他5位表示buf实际用到的字节数 */
+    unsigned char flags; /* 8位，低三位用来表示字符串的类型, 其他5位表示buf实际用到的字节数 */
     char buf[];
 };
 struct __attribute__ ((__packed__)) sdshdr8 {
@@ -36,7 +36,7 @@ struct __attribute__ ((__packed__)) sdshdr64 {
     char buf[];
 };
 ```
-:question: 为什么有5,8,16,32,64这几种类型的结构体？   
+:question: 为什么有5,8,16,32,64这几种类型的结构体[^1]？   
 :key: 为了节省内存。对于rednodejs 一个字符串占几个字节is内存是非常宝贵的，要尽量的节省内存。因为C语言中int有不同的长度，有的是1个字节（8位），有的是2个字节（16位），有的是4个字节（32位），有的是8个字节（64位），所以根据buf的长度来选择合适的结构体。   
 :question: 为什么要用__attribute__ ((__packed__))?   
 :key: 为了防止编译器对结构体进行优化, 内存对齐[^2]。   

@@ -70,7 +70,7 @@ __attribute__ ((__packed__))就是告诉编译器不能进行内存对齐。
                v  |                       |
    [0][0][1][0][1]|[0][0][0]              |
     higher 5 bit  | lower 3 bit           v
-          flag(8bit)                [t][e][s][t][\0]
+          flags(8bit)               [t][e][s][t][\0]
                                        char buf[]
 ```
 ```

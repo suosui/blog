@@ -1,5 +1,5 @@
 
-[【前】 Redis](./Redis.md)   
+[【前】Redis](./Redis.md)   
 [【后】Redis-List](./redis-List.md)
 ### 数据结构
 ``` c
@@ -98,8 +98,8 @@ C字符串中的字符必须符合某种编码（比如ASCII），并且除了�
  　　　       </tbody>
 　　　    </table>
 
-[【前】 Redis](./Redis.md)   
-[【后】Redis-List](./redis-List.md)
+[【前】Redis](./Redis.md)   
+[【后】Redis-List](./redis-List.md)   
 
 [^1]: C语言里一个char占一个字节（8位）。
 [^2]: 内存对齐：结构体的成员变量在内存中的地址是按照成员变量的声明顺序来的，但是在内存中的地址并不是按照声明顺序来的，而是按照成员变量的类型和大小来的。比如一个int类型的变量在内存中的地址是4的倍数，一个char类型的变量在内存中的地址是1的倍数。这样做的目的是为了提高内存的读取速度。

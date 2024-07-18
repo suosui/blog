@@ -8,7 +8,7 @@ typedef char *sds;
 /* Note: sdshdr5 is never used, we just access the flags byte directly.
  * However is here to document the layout of type 5 SDS strings. */
 struct __attribute__ ((__packed__)) sdshdr5 {
-    unsigned char flags [^1]; /* 8位，低三位用来表示字符串的类型, 其他5位表示buf实际用到的字节数 */
+    unsigned char flags[^1]; /* 8位，低三位用来表示字符串的类型, 其他5位表示buf实际用到的字节数 */
     char buf[];
 };
 struct __attribute__ ((__packed__)) sdshdr8 {

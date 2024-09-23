@@ -27,3 +27,9 @@ find / -name filename
 ```shell
 sudo chown -R a:b /path/to/directory
 ```
+
+### tar.gz
+```shell
+解压 tar zxvf 文件名.tar.gz
+压缩 tar zcvf 文件名.tar.gz 待压缩的文件名
+```

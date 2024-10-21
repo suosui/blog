@@ -33,3 +33,16 @@ sudo chown -R a:b /path/to/directory
 解压 tar zxvf 文件名.tar.gz
 压缩 tar zcvf 文件名.tar.gz 待压缩的文件名
 ```
+
+### 虚拟磁盘库容
+```bash
+lsblk # 查看磁盘信息
+df -h # 查看磁盘使用情况
+df -T /data # 查看指定目录的文件系统类型
+
+resize2fs /dev/vdb # 扩容文件系统 对于 ext4 文件系统
+xfs_growfs /data # 扩容文件系统 对于 xfs 文件系统
+
+df -h /data # 验证扩展是否成功
+```
+

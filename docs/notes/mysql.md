@@ -71,3 +71,8 @@ mysqldump -u root -p test table_name > table_name.sql
 ```shell
 mysql -u root -p test < table_name.sql
 ```
+
+### 17. 数据目录
+```shell
+SHOW VARIABLES LIKE 'datadir';
+```

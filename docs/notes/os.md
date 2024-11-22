@@ -46,3 +46,7 @@ xfs_growfs /data # 扩容文件系统 对于 xfs 文件系统
 df -h /data # 验证扩展是否成功
 ```
 
+### 查看当前文件夹下的文件大小
+```shell
+du -a
+```

@@ -66,10 +66,23 @@ show table status like 'table_name';
 ```shell
 mysqldump -u root -p test table_name > table_name.sql
 ```
+### 14.1 备份多张表
+```shell
+mysqldump -u root -p test table1 table2 > tables.sql
+```
+### 14.2 备份多个表并压缩
+```shell
+mysqldump -u root -p test table1 table2 | gzip > tables.sql.gz
+```
+
 
 ### 15.还原指定表
 ```shell
 mysql -u root -p test < table_name.sql
+```
+### 15.1 从 .sql.gz 文件还原（如果你使用了压缩）
+```shell
+gunzip < tables.sql.gz | mysql -u root -p test
 ```
 
 ### 17. 数据目录

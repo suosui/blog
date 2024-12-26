@@ -9,6 +9,12 @@ lsof -i 端口号                # ubuntu,macos
 scp -r root@远程ip:/root/file.zip ~/Repository/db/
 ```
 
+### 2.1. scp with port
+```shell
+scp -P ${port} -r root@${ip}:/path_remote path_local
+scp -P ${port} -r path_local root@${ip}:/path_remote
+```
+
 ### 3. 显示文件夹信息
 ```shell
 alias ll='ls -lG' # macos
@@ -49,4 +55,14 @@ df -h /data # 验证扩展是否成功
 ### 查看当前文件夹下的文件大小
 ```shell
 du -a
+```
+
+### 拷贝
+```shell
+cp -r /path/to/source /path/to/destination
+```
+
+### 拷贝并覆盖
+```shell
+cp -rf /path/to/source /path/to/destination
 ```

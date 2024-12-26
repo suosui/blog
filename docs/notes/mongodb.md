@@ -16,6 +16,8 @@ db.system.profile.find({"ns" : {$nin:["test.oplog.rs","test.system.profile"]},})
 
 db.collection.getIndexes() // 获取索引
 db.collection.createIndex({ username: 1 }, { unique: true }) // 创建索引
+db.collection.dropIndex({ username: 1 }) 或者 db.collection.dropIndex('indexName')// 删除索引
+db.collection.find(query).explain("executionStats") // 查看查询执行情况
 
 db.db.currentOp() // 查看当前操作
 db.killOp(opid) // 杀死慢查询

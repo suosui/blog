@@ -89,3 +89,18 @@ gunzip < tables.sql.gz | mysql -u root -p test
 ```shell
 SHOW VARIABLES LIKE 'datadir';
 ```
+
+### 18. 当前活跃的事务
+```sql
+SELECT 
+    trx_id AS '事务ID',
+    trx_state AS '事务状态',
+    trx_started AS '开始时间',
+    trx_wait_started AS '等待开始时间',
+    trx_mysql_thread_id AS '线程ID',
+    trx_query AS '最后执行的语句',
+    trx_tables_in_use AS '使用的表数量',
+    trx_tables_locked AS '锁定的表数量'
+FROM 
+    information_schema.INNODB_TRX;
+```

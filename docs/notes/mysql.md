@@ -104,3 +104,29 @@ SELECT
 FROM 
     information_schema.INNODB_TRX;
 ```
+
+### 19. 查看所有数据库大小
+```sql
+SELECT 
+    table_schema AS `Database`, 
+    ROUND(SUM(data_length + index_length) / 1024 / 1024 / 1024, 2) AS `Size (GB)`
+FROM 
+    information_schema.tables
+GROUP BY 
+    table_schema
+ORDER BY 
+    `Size (MB)` DESC;
+```
+
+### 20. 查看所有表大小
+```sql
+SELECT 
+    table_name AS `Table Name`, 
+    ROUND((data_length + index_length) / 1024 / 1024 / 1024, 2) AS `Size (GB)`
+FROM 
+    information_schema.tables
+WHERE 
+    table_schema = 'your_database_name'
+ORDER BY 
+    `Size (GB)` DESC;
+```

@@ -18,7 +18,6 @@ db.collection.getIndexes() // 获取索引
 db.collection.createIndex({ username: 1 }, { unique: true }) // 创建索引
 db.collection.dropIndex({ username: 1 }) 或者 db.collection.dropIndex('indexName')// 删除索引
 db.collection.find(query).explain("executionStats") // 查看查询执行情况
-
 db.db.currentOp() // 查看当前操作
 db.killOp(opid) // 杀死慢查询
 ```
@@ -75,3 +74,10 @@ mongo --host 副本集名称/host1:port1,host2:port2,host3:port3,host4:port4
 rs.status()
 ```
 
+### 11. 在docker中restore mongo
+```shell
+docker cp /path/to/backup/backup.tar.gz container:/backup.tar.gz
+docker exec -it container bash
+tar -zxvf /backup.tar.gz
+mongorestore --host localhost --port 27017 --db dbname --username username --password password /backup/dbname
+```

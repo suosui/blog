@@ -115,7 +115,7 @@ FROM
 GROUP BY 
     table_schema
 ORDER BY 
-    `Size (MB)` DESC;
+    `Size (GB)` DESC;
 ```
 
 ### 20. 查看所有表大小

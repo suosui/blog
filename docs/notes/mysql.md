@@ -141,3 +141,8 @@ DROP PRIMARY KEY;
 ALTER TABLE your_table
 ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY;
 ```
+
+### 22. 删除表数据
+```sql
+TRUNCATE TABLE your_table;
+```

@@ -130,3 +130,14 @@ WHERE
 ORDER BY 
     `Size (GB)` DESC;
 ```
+
+### 21. 添加自增主键
+```sql
+-- 删除现有主键
+ALTER TABLE your_table
+DROP PRIMARY KEY;
+
+-- 添加自增主键
+ALTER TABLE your_table
+ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY;
+```

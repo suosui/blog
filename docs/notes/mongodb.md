@@ -81,3 +81,30 @@ docker exec -it container bash
 tar -zxvf /backup.tar.gz
 mongorestore --host localhost --port 27017 --db dbname --username username --password password /backup/dbname
 ```
+
+### 11. 查询最新的记录
+```javascript
+db.collectionName.aggregate([
+  {
+    $match: {
+        
+    }
+  },
+  {
+    $sort: {
+        createdAt: -1 // 根据createdAt字段降序排序
+    }
+  },
+  {
+    $group: {
+      _id: "$colum_key", // 
+      latestRecord: { $first: "$$ROOT" } // 获取每组的最新记录
+    }
+  },
+  {
+    $replaceRoot: {
+      newRoot: "$latestRecord" // 将结果格式调整为记录本身
+    }
+  }
+])
+```

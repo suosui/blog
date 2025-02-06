@@ -108,3 +108,8 @@ db.collectionName.aggregate([
   }
 ])
 ```
+
+### 12. mongorestore with gzip
+```shell
+mongorestore --host 127.0.0.1 --port 29019  --gzip pathToDumpDir/dbName/ --db dbName
+```

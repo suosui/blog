@@ -111,7 +111,7 @@ db.collectionName.aggregate([
 
 ### 12. mongorestore with gzip
 ```shell
-mongorestore --host 127.0.0.1 --port 29019  --gzip pathToDumpDir/dbName/collection.bson.gz --db dbName
+mongorestore --host 127.0.0.1 --port 29019  --gzip pathToDumpDir/dbName/collection.bson.gz --db dbName --collection collectionName
 ```
 
 #### 13. mongodump with gzip

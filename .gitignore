@@ -17,3 +17,6 @@ out
 
 #
 out.*
+
+# docs
+docs/notes/shell

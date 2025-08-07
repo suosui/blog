@@ -111,6 +111,12 @@ db.collectionName.aggregate([
 
 ### 12. mongorestore with gzip
 ```shell
+mongorestore --host 127.0.0.1 --port 29019 --username 'admin' --password 'admin' --authenticationDatabase admin --gzip --dir pathToDumpDir 
+```
+```shell
+mongorestore --host 127.0.0.1 --port 29019 --username 'admin' --password 'admin' --authenticationDatabase admin --gzip pathToDumpDir/dbName/  --db dbName
+```
+```shell
 mongorestore --host 127.0.0.1 --port 29019  --gzip pathToDumpDir/dbName/collection.bson.gz --db dbName --collection collectionName
 ```
 

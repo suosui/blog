@@ -6,3 +6,4 @@ docker logs nginx 2>&1 | grep "127."
 
 ### 倒入文件到container
 docker cp /local/dir mongo:/container/dir
+docker cp mongo:/container/dir /local/dir

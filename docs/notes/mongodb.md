@@ -124,3 +124,8 @@ mongorestore --host 127.0.0.1 --port 29019  --gzip pathToDumpDir/dbName/collecti
 ```shell
 mongodump --host ip:host --db dbName --collection collectionName  --username test --password password --authenticationDatabase admin --gzip --out /
 ```
+
+#### 14. 索引构建进度
+```shell
+tail -n 50 /data/mongodb/logs/mongodb.log | grep "index build"
+```

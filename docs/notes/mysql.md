@@ -146,3 +146,27 @@ ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY;
 ```sql
 TRUNCATE TABLE your_table;
 ```
+
+### 23. 查看比较规则
+```sql
+SHOW COLLATION LIKE 'utf8\_%';
+```
+
+### 24. 获取表字段的最大长度
+```sql
+SET SESSION group_concat_max_len = 1000000;
+
+SELECT 
+  CONCAT(
+    'SELECT ',
+    GROUP_CONCAT(
+      CONCAT('MAX(CHAR_LENGTH(`', COLUMN_NAME, '`)) AS `', COLUMN_NAME, '`')
+      SEPARATOR ', '
+    ),
+    ' FROM your_table_name;'
+  ) AS query_sql
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'your_database_name'
+  AND TABLE_NAME = 'your_table_name';
+
+```

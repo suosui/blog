@@ -1,0 +1,13 @@
+server.host: "0.0.0.0"
+server.shutdownTimeout: "5s"
+
+# Elasticsearch 地址要用 https，并且用和 ES 容器一致的 hostname（比如 es01）
+elasticsearch.hosts: [ "https://es01:9200" ]
+
+# 指定 CA 证书，让 Kibana 能验证 ES 的自签名证书
+elasticsearch.ssl.certificateAuthorities: [ "/usr/share/kibana/config/certs/http_ca.crt" ]
+
+# 登录账号密码（Elastic 安装时自动生成的 elastic 用户密码，或者你自己设置的 ELASTIC_PASSWORD）
+elasticsearch.username: "elastic"
+elasticsearch.password: "q3PeBVcb4DRc1K_dtO6K"
+

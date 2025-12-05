@@ -129,3 +129,10 @@ mongodump --host ip:host --db dbName --collection collectionName  --username tes
 ```shell
 tail -n 50 /data/mongodb/logs/mongodb.log | grep "index build"
 ```
+
+#### 15. 索引命中状态
+```javascript
+db.cust_flowtask.aggregate([
+  { $indexStats: {} }
+])
+```

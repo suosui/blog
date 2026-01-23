@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Coding & Claude Code 技术演讲</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.min.css">
+
+    <!-- Highlight.js for code highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github-dark.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="custom.css">
+
+    <style>
+        body {
+            background-color: #0d1117;
+        }
+
+        .reveal {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .reveal code {
+            padding: 2px 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Section 1: Vibe Coding Introduction -->
+            <section data-markdown="sections/01-vibe-coding.md" data-separator="^---$" data-separator-vertical="^--$"></section>
+
+            <!-- Section 2: Claude Code Overview -->
+            <section data-markdown="sections/02-claude-code-overview.md" data-separator="^---$" data-separator-vertical="^--$"></section>
+
+            <!-- Section 3.1: Skills -->
+            <section data-markdown="sections/03-skills.md" data-separator="^---$" data-separator-vertical="^--$"></section>
+
+            <!-- Section 3.2: Agents -->
+            <section data-markdown="sections/04-agents.md" data-separator="^---$" data-separator-vertical="^--$"></section>
+
+            <!-- Section 3.3: MCP -->
+            <section data-markdown="sections/05-mcp.md" data-separator="^---$" data-separator-vertical="^--$"></section>
+
+            <!-- Section 3.4: Commands -->
+            <!-- <section data-markdown="sections/06-commands.md" data-separator="^---$" data-separator-vertical="^--$"></section> -->
+
+            <!-- Section 4: Real-world Workflows -->
+            <section data-markdown="sections/07-workflows.md" data-separator="^---$" data-separator-vertical="^--$"></section>
+
+            <!-- Section 5: Advanced Topics & Q&A -->
+            <section data-markdown="sections/08-advanced.md" data-separator="^---$" data-separator-vertical="^--$"></section>
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/markdown/markdown.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/highlight.min.js"></script>
+
+    <!-- Custom Configuration -->
+    <script>
+        // Reveal.js Configuration
+        Reveal.initialize({
+            hash: true,
+            margin: 0.01,
+            minScale: 0.1,
+            maxScale: 1.0,
+            autoPlayMedia: false,
+            center: true,
+            disableLayout: false,
+
+            // Transition settings
+            transition: 'slide',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+
+            // Keyboard and navigation
+            keyboard: true,
+            touch: true,
+            mouseWheel: false,
+            navigationMode: 'linear',
+
+            // Fragments
+            fragmentInURL: true,
+            preloadIframes: null,
+
+            // Plugin configuration
+            plugins: [
+                RevealMarkdown,
+                RevealHighlight,
+                RevealNotes,
+            ],
+
+            // Markdown configuration
+            markdown: {
+                smartypants: true
+            },
+
+            // Highlight configuration
+            highlight: {
+                beforeHighlight: (highlighter, code, lang) => {
+                    if (!lang) return code;
+                    try {
+                        return highlighter.highlight(code, { language: lang, ignoreIllegals: true }).value;
+                    } catch (e) {
+                        return code;
+                    }
+                }
+            },
+
+            // Custom slide numbers
+            slideNumber: 'c/t',
+
+            // Speaker view
+            showNotes: false,
+            notesSeparator: 'note:',
+
+            // Help overlay
+            help: true,
+
+            // RTL support
+            rtl: false,
+
+            // Vertical slides centering
+            center: true,
+
+            // Embedded media
+            video: {
+                preloadIframes: true
+            }
+        });
+
+        // 画布式拖拽浏览
+        (function() {
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let translateX = 0;
+            let translateY = 0;
+            let currentX = 0;
+            let currentY = 0;
+            const slidesContainer = document.querySelector('.reveal .slides');
+
+            // 进入/退出 overview 模式时重置位置
+            Reveal.on('overviewshown', function() {
+                translateX = 0;
+                translateY = 0;
+                currentX = 0;
+                currentY = 0;
+                slidesContainer.style.transition = 'none';
+            });
+
+            Reveal.on('overviewhidden', function() {
+                slidesContainer.style.transform = '';
+                slidesContainer.style.transition = '';
+            });
+
+            document.addEventListener('mousedown', function(e) {
+                if (e.target.closest('pre, code, input, textarea, a, button')) return;
+
+                // 只在 overview 模式下启用画布拖拽
+                if (!Reveal.isOverview()) return;
+
+                isDragging = true;
+                startX = e.clientX - currentX;
+                startY = e.clientY - currentY;
+                document.body.style.cursor = 'grabbing';
+                document.body.style.userSelect = 'none';
+                slidesContainer.style.transition = 'none';
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+
+                currentX = e.clientX - startX;
+                currentY = e.clientY - startY;
+
+                // 应用平移变换
+                const baseTransform = slidesContainer.style.transform.replace(/translate\([^)]*\)/g, '').trim();
+                slidesContainer.style.transform = `translate(${currentX}px, ${currentY}px) ${baseTransform}`;
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (!isDragging) return;
+                isDragging = false;
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            });
+
+            document.addEventListener('mouseleave', function() {
+                if (!isDragging) return;
+                isDragging = false;
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            });
+
+            // 点击幻灯片跳转（在 overview 模式下）
+            slidesContainer.addEventListener('click', function(e) {
+                if (Math.abs(currentX - translateX) > 5 || Math.abs(currentY - translateY) > 5) {
+                    // 如果有拖拽，不触发点击
+                    translateX = currentX;
+                    translateY = currentY;
+                    return;
+                }
+                translateX = currentX;
+                translateY = currentY;
+            });
+        })();
+    </script>
+</body>
+</html>

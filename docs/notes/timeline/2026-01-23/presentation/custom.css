@@ -1,0 +1,523 @@
+/* Dark Tech Theme - GitHub Dark Style */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #58a6ff;
+    --success-color: #3fb950;
+    --warning-color: #d29922;
+    --danger-color: #f85149;
+    --purple-color: #b392f0;
+    --gray-100: #f0f6fc;
+    --gray-900: #0d1117;
+    --gray-800: #161b22;
+    --gray-700: #21262d;
+    --gray-600: #30363d;
+    --gray-300: #8b949e;
+}
+
+html {
+    font-size: clamp(11px, 1.8vw, 15px);
+}
+
+/* Hide all scrollbars globally */
+.reveal,
+.reveal * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overflow-x: hidden;
+}
+
+.reveal *::-webkit-scrollbar,
+.reveal::-webkit-scrollbar {
+    display: none;
+}
+
+.reveal {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    color: #e6edf3;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #58a6ff;
+    text-transform: none;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.reveal h1 {
+    font-size: clamp(1.4em, 3.8vw, 2.6em);
+    margin-bottom: clamp(0.1em, 0.3vw, 0.2em);
+    line-height: 1.2;
+}
+
+.reveal h2 {
+    font-size: clamp(1.1em, 3.2vw, 1.9em);
+    margin-bottom: clamp(0.1em, 0.25vw, 0.15em);
+    line-height: 1.2;
+}
+
+.reveal h3 {
+    font-size: clamp(0.95em, 2.3vw, 1.4em);
+    margin-bottom: clamp(0.08em, 0.2vw, 0.1em);
+    line-height: 1.2;
+}
+
+.reveal h4 {
+    font-size: clamp(0.85em, 1.8vw, 1.1em);
+    margin-bottom: clamp(0.05em, 0.15vw, 0.08em);
+    line-height: 1.2;
+}
+
+.reveal p {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.8em, 1.5vw, 1em);
+    line-height: 1.5;
+    color: #e6edf3;
+    margin: 0.1em 0;
+}
+
+.reveal strong {
+    color: #58a6ff;
+    font-weight: 700;
+}
+
+.reveal em {
+    color: #b392f0;
+}
+
+/* Code highlighting */
+.reveal code {
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0.2em 0.5em;
+    background: rgba(88, 166, 255, 0.1);
+    border-radius: 3px;
+    color: #79c0ff;
+    font-size: 0.9em;
+}
+
+.reveal pre {
+    width: 100%;
+    font-size: clamp(0.5em, 1.1vw, 0.75em);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    margin: clamp(0.3em, 0.6vw, 0.5em) auto;
+    max-height: none;
+}
+
+.reveal pre code {
+    padding: clamp(0.4em, 0.8vw, 0.6em);
+    background: transparent;
+    color: #e6edf3;
+    overflow: visible;
+    line-height: 1.3;
+    max-height: none !important;
+}
+
+/* Link styling */
+.reveal a {
+    color: #58a6ff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.reveal a:hover {
+    color: #79c0ff;
+    border-bottom-color: #58a6ff;
+}
+
+/* List styling */
+.reveal ul,
+.reveal ol {
+    font-size: clamp(0.8em, 1.5vw, 1em);
+    margin-left: 1.2em;
+    line-height: 1.4;
+    margin: clamp(0.1em, 0.5vw, 0.3em) 0;
+}
+
+.reveal li {
+    margin: clamp(0.05em, 0.3vw, 0.1em) 0;
+    color: #e6edf3;
+}
+
+/* Section styling */
+.reveal section {
+    text-align: left;
+    padding: clamp(0.2em, 0.8vw, 0.4em);
+    overflow-y: auto;
+    max-height: calc(100vh - 2em);
+    max-width: 100vw;
+    display: block;
+    word-wrap: break-word;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.reveal section::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+}
+
+.reveal section.title-slide {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.reveal section.title-slide h1,
+.reveal section.title-slide h2 {
+    text-align: center;
+}
+
+/* Fragment animation */
+.reveal .fragment {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.6s ease;
+}
+
+.reveal .fragment.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Status indicators */
+.status-success {
+    color: #3fb950;
+    font-weight: 700;
+}
+
+.status-warning {
+    color: #d29922;
+    font-weight: 700;
+}
+
+.status-error {
+    color: #f85149;
+    font-weight: 700;
+}
+
+.status-info {
+    color: #58a6ff;
+    font-weight: 700;
+}
+
+/* Card styling */
+.card {
+    background: rgba(30, 38, 50, 0.8);
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: clamp(0.5em, 1.2vw, 0.8em);
+    margin: clamp(0.15em, 0.4vw, 0.25em) 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    font-size: clamp(0.8em, 1.5vw, 1em);
+}
+
+.card h3 {
+    margin: 0 0 0.15em 0;
+    color: #58a6ff;
+    font-size: clamp(0.95em, 1.8vw, 1.15em);
+}
+
+.card h4 {
+    margin: 0.08em 0;
+    font-size: clamp(0.85em, 1.6vw, 1.05em);
+}
+
+.card p {
+    margin: 0.1em 0;
+    line-height: 1.4;
+}
+
+.card ul, .card ol {
+    margin: clamp(0.1em, 0.3vw, 0.15em) 0;
+    padding-left: 1.1em;
+    line-height: 1.4;
+}
+
+.card-highlight {
+    background: rgba(88, 166, 255, 0.1);
+    border-left: 4px solid #58a6ff;
+}
+
+/* Workflow steps */
+.workflow-step {
+    display: flex;
+    margin: clamp(0.1em, 0.3vw, 0.15em) 0;
+    gap: clamp(0.4em, 1vw, 0.6em);
+    font-size: clamp(0.7em, 1.4vw, 0.9em);
+}
+
+.workflow-step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(28px, 5vw, 40px);
+    height: clamp(28px, 5vw, 40px);
+    background: linear-gradient(135deg, #58a6ff, #79c0ff);
+    border-radius: 50%;
+    font-weight: 700;
+    color: #0d1117;
+    font-size: clamp(0.65em, 1.4vw, 0.85em);
+    flex-shrink: 0;
+}
+
+.workflow-step-content {
+    flex: 1;
+}
+
+.workflow-step-title {
+    color: #58a6ff;
+    font-weight: 700;
+    margin: 0;
+    font-size: clamp(0.85em, 1.6vw, 1em);
+}
+
+.workflow-step-desc {
+    color: #8b949e;
+    margin: 0.03em 0 0 0;
+    font-size: clamp(0.7em, 1.4vw, 0.85em);
+    line-height: 1.3;
+}
+
+/* Side-by-side comparison */
+.comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.4em, 1vw, 0.8em);
+    margin: clamp(0.2em, 0.4vw, 0.25em) 0;
+    font-size: clamp(0.7em, 1.4vw, 0.9em);
+}
+
+.comparison-item {
+    padding: clamp(0.5em, 1vw, 0.8em);
+    border-radius: 6px;
+    border: 1px solid #30363d;
+    background: rgba(30, 38, 50, 0.5);
+    line-height: 1.4;
+}
+
+.comparison-item h4 {
+    color: #58a6ff;
+    margin: 0 0 0.15em 0;
+    font-size: clamp(0.9em, 1.6vw, 1.05em);
+    font-weight: 600;
+}
+
+.comparison-item p {
+    margin: 0.08em 0;
+    line-height: 1.35;
+}
+
+.comparison-item ul {
+    margin: 0.08em 0;
+    padding-left: 1.1em;
+}
+
+.comparison-item.good {
+    border-left: 4px solid #3fb950;
+    background: rgba(63, 185, 80, 0.05);
+}
+
+.comparison-item.bad {
+    border-left: 4px solid #f85149;
+    background: rgba(248, 81, 73, 0.05);
+}
+
+.comparison-item.good h4 {
+    color: #3fb950;
+}
+
+.comparison-item.bad h4 {
+    color: #f85149;
+}
+
+/* Icon styling */
+.icon-success::before {
+    content: "✓ ";
+    color: #3fb950;
+    font-weight: 700;
+}
+
+.icon-error::before {
+    content: "✗ ";
+    color: #f85149;
+    font-weight: 700;
+}
+
+.icon-info::before {
+    content: "ℹ ";
+    color: #58a6ff;
+    font-weight: 700;
+}
+
+.icon-warning::before {
+    content: "⚠ ";
+    color: #d29922;
+    font-weight: 700;
+}
+
+.icon-tip::before {
+    content: "💡 ";
+}
+
+.icon-goal::before {
+    content: "🎯 ";
+}
+
+.icon-tool::before {
+    content: "🔧 ";
+}
+
+/* Blockquote styling */
+.reveal blockquote {
+    background: rgba(88, 166, 255, 0.1);
+    border-left: 4px solid #58a6ff;
+    padding: clamp(0.5em, 1vw, 0.7em) clamp(0.8em, 1.5vw, 1em);
+    border-radius: 3px;
+    font-style: italic;
+    color: #b392f0;
+    margin: clamp(0.15em, 0.3vw, 0.2em) 0;
+    font-size: clamp(0.75em, 1.4vw, 0.95em);
+    line-height: 1.4;
+    overflow: hidden;
+}
+
+.reveal blockquote p {
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Table styling */
+.reveal table {
+    font-size: clamp(0.6em, 1.2vw, 0.8em);
+    margin: clamp(0.2em, 0.4vw, 0.25em) auto;
+    border-collapse: collapse;
+    line-height: 1.3;
+}
+
+.reveal table th {
+    background: rgba(88, 166, 255, 0.1);
+    color: #58a6ff;
+    padding: clamp(0.25em, 0.6vw, 0.4em) clamp(0.3em, 0.8vw, 0.5em);
+    border: 1px solid #30363d;
+    font-weight: 600;
+}
+
+.reveal table td {
+    padding: clamp(0.25em, 0.6vw, 0.4em) clamp(0.3em, 0.8vw, 0.5em);
+    border: 1px solid #30363d;
+    color: #e6edf3;
+}
+
+.reveal table tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 1024px) {
+    .comparison {
+        grid-template-columns: 1fr;
+        gap: clamp(0.3em, 0.8vw, 0.6em);
+    }
+
+    .workflow-step {
+        flex-direction: column;
+        gap: clamp(0.2em, 0.5vw, 0.4em);
+    }
+
+    .workflow-step-number {
+        width: clamp(26px, 4.5vw, 38px);
+        height: clamp(26px, 4.5vw, 38px);
+    }
+
+    html {
+        font-size: clamp(10px, 1.6vw, 13px);
+    }
+
+    .reveal section {
+        padding: clamp(0.15em, 0.6vw, 0.3em);
+    }
+}
+
+/* Syntax highlighting fixes */
+.hljs {
+    background: #0d1117;
+    color: #e6edf3;
+}
+
+.hljs-attr,
+.hljs-attribute {
+    color: #79c0ff;
+}
+
+.hljs-string {
+    color: #a5d6ff;
+}
+
+.hljs-number {
+    color: #79c0ff;
+}
+
+.hljs-literal {
+    color: #79c0ff;
+}
+
+.hljs-type,
+.hljs-class {
+    color: #f0883e;
+}
+
+.hljs-title,
+.hljs-function {
+    color: #d2a8ff;
+}
+
+.hljs-keyword {
+    color: #ff7b72;
+}
+
+.hljs-comment {
+    color: #8b949e;
+}
+
+.hljs-built_in {
+    color: #79c0ff;
+}
+
+.hljs-variable {
+    color: #ffa657;
+}
+
+/* Overview 模式 - 允许无限拖拽 */
+.reveal.overview {
+    overflow: visible !important;
+}
+
+.reveal.overview .slides {
+    overflow: visible !important;
+}
+
+.reveal.overview .slides section {
+    cursor: grab !important;
+}
+
+.reveal.overview .slides section:hover {
+    outline: 2px solid #58a6ff !important;
+    outline-offset: -2px !important;
+}
+
+.reveal.overview .slides section.present {
+    outline: 3px solid #58a6ff !important;
+    outline-offset: -3px !important;
+}

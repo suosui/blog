@@ -20,3 +20,5 @@ out.*
 
 # docs
 docs/notes/shell
+
+.DS_Store

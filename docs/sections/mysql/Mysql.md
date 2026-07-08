@@ -9,22 +9,3 @@
 * [`[基础]` undo日志](./Mysql.md#undo日志)
 * [`[进阶]` MVCC](./Mysql.md#MVCC)
 * [`[进阶]` 锁](./锁.md)
-
-
-# 特性
-
-# 索引
-
-# Explain
-
-# BufferPool
-
-# 事务
-
-# redo日志
-
-# undo日志
-
-# MVCC
-
-# 锁

@@ -8,7 +8,7 @@
 * [`[基础]` redo日志](./Mysql.md#redo日志)
 * [`[基础]` undo日志](./Mysql.md#undo日志)
 * [`[进阶]` MVCC](./Mysql.md#MVCC)
-* [`[进阶]` 锁](./Mysql.md#锁)
+* [`[进阶]` 锁](./锁.md)
 
 
 # 特性

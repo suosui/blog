@@ -78,6 +78,66 @@ int uv_run(uv_loop_t* loop, uv_run_mode mode) {
 
 **③ `core.c:465-466` 的 `uv__update_time` + `uv__run_timers` 是每轮迭代都执行的**，不是 `UV_RUN_ONCE` 独有的特殊处理。`UV_RUN_ONCE` 的特殊之处只有最后那个 `break`。
 
+### 为什么循环外要补跑一次：1.45 版本的重构
+
+① 那段预跑代码不是一直都有的，是 `libuv 1.45.0` 重构时加进来的（Node 侧对应提交 `9e68f9413e`）。对比新旧两版能看出这行代码到底在补什么。
+
+**旧版（1.44 及以前）**，`timers` 在循环体**开头**，`UV_RUN_ONCE` 还额外在**结尾**特判一次：
+
+```c
+while (r != 0 && loop->stop_flag == 0) {
+  uv__update_time(loop);
+  uv__run_timers(loop);        // ← 开头，所有模式都跑
+  ...
+  uv__io_poll(loop, timeout);
+  ...
+  uv__run_check(loop);
+  uv__run_closing_handles(loop);
+
+  if (mode == UV_RUN_ONCE) {   // ← 结尾，仅 UV_RUN_ONCE 特判
+    uv__update_time(loop);
+    uv__run_timers(loop);
+  }
+  ...
+}
+```
+
+**新版（1.45+，即当前代码）**，`timers` 统一挪到结尾，循环外补一次预跑：
+
+```c
+if (mode == UV_RUN_DEFAULT && ...) {
+  uv__run_timers(loop);        // ← 循环外，仅 UV_RUN_DEFAULT
+}
+while (...) {
+  ...
+  uv__run_timers(loop);        // ← 结尾，所有模式统一走这一处
+  ...
+}
+```
+
+**为什么要挪？** 因为 `uv__io_poll` 是会睡觉的，阻塞时长由 `uv__next_timeout`（`timer.c:144-162`）算出来，正好是「距最近的定时器还有多久」。也就是说 `poll` 醒来的那一刻，往往就是**因为定时器到期了**。旧版里 poll 醒来后还要走完 `check → close`、绕回环顶才能跑 `timers`；新版把 `timers` 紧跟在 `close` 后面，逻辑上「睡够了就去处理到期的事」更顺，还顺带去掉了 `UV_RUN_ONCE` 那个重复的特判块。
+
+**但光挪位置会改变第一轮的行为。** 设想这段代码：
+
+```c
+uv_timer_start(&timer, cb, 0, 0);   // 0ms，立即到期
+uv_run(loop, UV_RUN_DEFAULT);
+```
+
+| 版本 | 第一轮先跑什么 |
+|---|---|
+| 旧版 | 进 `while` → `timers` 立刻执行 `cb` → 再 `poll` |
+| 新版（假设没有预跑） | 进 `while` → 先 `poll` → ... → 最后才轮到 `cb` |
+
+`poll` 虽然会因为 `timeout = 0` 立即返回、不会真的卡住，但**先跑 I/O 还是先跑 timer 这个顺序变了** —— 对依赖这个顺序的代码就是破坏性变更。于是加上循环外那次预跑，把第一轮的 `timers` 补回原位，让新版在可观察的执行顺序上和旧版完全一致。这正是注释里 "**M**aintain **b**ackwards **c**ompatibility" 的字面意思：不是为了新功能，纯粹是为了不打破已有行为。
+
+三个限定条件也都能对应解释：
+* **只在 `UV_RUN_DEFAULT` 触发** —— `UV_RUN_ONCE` / `UV_RUN_NOWAIT` 只跑一轮就 `break`，它们的 `timers` 本来就该在循环体末尾（对应旧版结尾那个特判块），加预跑反而会让它们一次 `uv_run` 跑两遍 `timers`
+* **`r != 0`** —— 循环压根不会进（`loop` 已死）时，预跑也不该发生
+* **`loop->stop_flag == 0`** —— 和 `while` 的条件保持一致，避免循环没跑、定时器却先执行了
+
+**这也解释了官方流程图为什么至今没改。** `1.45` 之前，代码顺序和官方图的切点是一致的（`timers` 都在前）；`1.45` 只是把物理书写顺序挪到了后面，靠这次预跑维持住原来的可观察顺序，所以图不需要跟着改 —— 上一节说的「切点不同、环相同」，根源就在这次重构。
+
 ### 概念顺序 ≠ 物理顺序
 
 `libuv` 官方文档给的流程图是这样的（从上往下，最后回到顶部）：
@@ -320,6 +380,52 @@ if (!(after >= 1 && after <= TIMEOUT_MAX)) {
 ```
 
 走到 `core.c:466` 时通常还没到期，还得再等一轮，领先幅度只会更大。
+
+#### 容易踩的坑：把"注册时机"和"下一轮迭代"搞混
+
+一个常见的误解是：`setTimeout`/`setImmediate` 是在 `fs` 回调**执行期间**注册的，所以应该被当成"新任务"，要等到**下一次完整的循环迭代**才会跑。
+
+这不对。`libuv` 的一次迭代不是"队列快照，处理完就结束，新加的东西留到下一次"，而是**一条固定顺序的物理流水线**：`... → poll → check → close → timers → ...`。`poll` 只是流水线上的一站，`check`、`timers` 是**同一次迭代里、紧跟在后面的站**，不是"下一次迭代"。`fs` 回调返回后，指令指针接着往下走完这次迭代剩下的部分——`check` 和 `timers` 本来就在这次迭代该执行的范围内，没有任何分支会让它们跳过本轮。
+
+真正需要等下一轮的，是往**已经走过的**工位塞东西——比如在 `check` 回调里再注册一个新的 `setImmediate`：
+
+```javascript
+setImmediate(() => {
+  console.log('immediate A (第一个)');
+  setImmediate(() => {
+    console.log('immediate B (A 内部注册的)');
+  });
+});
+setImmediate(() => {
+  console.log('immediate C (与 A 同批注册)');
+});
+```
+
+```
+immediate A (第一个)
+immediate C (与 A 同批注册)
+immediate B (A 内部注册的)     ← 真的等到了下一轮
+```
+
+`A`、`C` 在 `check` 阶段**开始之前**就注册好了，同一轮全跑完；`B` 是在 `check` **正在执行**的时候才注册的，真的被推迟到下一次迭代。机制在 `lib/internal/timers.js:433-441` 的 `processImmediate`：函数一开始就把 `immediateQueue` 清空、转存成本地快照（`queue.head = queue.tail = null`），期间新增的项目进的是**下一次**才会读取的新队列。
+
+对比最初那个 `fs` 回调的例子：`setTimeout`/`setImmediate` 是在 `poll` 阶段注册的，`poll` 排在 `check`、`timers` **前面**，落在"还没走到"的范围内，所以同一轮就能跑完——跟这里 `B` 的情况本质不同。
+
+#### 顺序是结构性的，不是靠谁先到期
+
+`check` 阶段没有任何时间判断——`uv__run_check` 就是遍历 `check_handles` 队列，把当前已经在队列里的全部执行一遍（`loop-watcher.c` 的 `UV_LOOP_WATCHER_DEFINE` 宏）。而 `timers` 阶段是有条件的：只有 `loop->time` 真的推进到 `handle->timeout`（`timer.c:179`），这个定时器才会被摘出来执行。
+
+实测一下两者相对 `poll` 回调的延迟：
+
+```
+fs callback(poll) at +650.0us
+immediate         at +3530.3us  (距poll回调 2880.3us)
+timeout           at +4932.8us  (距poll回调 4282.8us)
+```
+
+关键在这：跑到 `check` 阶段时（`+3530us`），距 `setTimeout` 注册已经过去了近 `2.9ms`——早就超过 `1ms` 钳制阈值，这个定时器**此刻已经"成熟"、可以执行了**。但它依然没能抢在 `immediate` 前面，因为它想被执行，必须**物理走到** `core.c:466` 那一行，而这一行在 `core.c:462` 的 `check` **之后**。
+
+`immediate` 领先 `timeout`，不是"谁先准备好"的时间竞速，而是纯粹的**代码位置**——`check` 写在 `timers` 前面这件事在源码里是死的，跟定时器有没有到期无关，哪怕定时器提前十倍成熟，也翻不过 `check` 这一行去。
 
 ### 主模块顶层：随机
 

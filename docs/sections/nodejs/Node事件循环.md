@@ -450,6 +450,76 @@ uv__queue_empty(&loop->idle_handles) &&
 
 idle 队列非空就直接返回 `0` —— 保证 `poll` 阶段不阻塞，`immediate` 能在同一轮的 `check` 里立刻跑掉。相关 handle 的初始化在 `src/env.cc:1046-1051`。
 
+### 特例：线程池 I/O 的完成通知也走 poll 阶段
+
+上面「`setImmediate` 队列非空 → `poll` 不阻塞」这条规则，容易让人推出一个错误结论：既然 `poll` 不阻塞了，是不是就等于跳过了 `poll`，文件 I/O 的完成回调就追不上、只能等下一轮？用一个具体例子看看事实：
+
+```javascript
+function imm() {
+  setImmediate(() => {
+    console.log('setImmediate');
+    imm();
+  });
+}
+imm();
+
+require('fs').readFile('/不存在的文件.pdf', () => {
+  console.log('readFile');
+  process.exit(0);
+});
+// 绝大多数情况下只输出一行：readFile
+```
+
+`setImmediate` 递归注册、队列永不为空，理论上应该无限打印才对，实测却常常一次都不打印。原因要拆成两层：**`fs.readFile` 的完成通知走的是哪个阶段**，以及**"不阻塞"到底改变了什么**。
+
+#### 完成通知走的是 poll，不是 check
+
+`fs.readFile` 打开文件不是同步判断路径存不存在，而是把 `open()` 异步提交给线程池（`lib/fs.js:388-394` 的 `binding.open(...)`），主线程立刻返回，继续往下跑，先把 `setImmediate` 注册好。真正的 `open(2)` 系统调用在 worker 线程里执行，完成后调用 `uv_async_send(&loop->wq_async)`（`deps/uv/src/threadpool.c:301`）通知主线程。
+
+关键在于这个通知走的通道：`wq_async` 是一个真正的 `uv__io_t`，靠 `uv__io_start(loop, &loop->async_io_watcher, POLLIN)` 注册（`deps/uv/src/unix/async.c:235-236`），本质是往一个内部管道写字节触发 `POLLIN` 事件。这意味着线程池任务的完成回调是在 **`poll` 阶段**（`uv__io_poll`，`core.c:448`）被捕获和处理的，和 `fs` 模块普通的 I/O 回调走的是同一条路，跟 `check` 阶段完全不相干。
+
+#### "不阻塞"不等于"跳过"
+
+`setImmediate` 队列非空只是把 `epoll_pwait` 的 `timeout` 参数从某个正数变成了 `0`（`core.c:394`），这个调用本身**照样会执行**：
+
+```c
+// deps/uv/src/unix/linux.c:1432
+nfds = epoll_pwait(epollfd, events, ARRAY_SIZE(events), timeout, sigmask);
+```
+
+`timeout = 0` 时，内核依然会去检查一遍有没有已就绪的 fd，只是不阻塞等待——已经就绪就立刻返回该事件，没有就绪也立刻返回 `0` 个事件。所以「`poll` 不阻塞」准确的含义是：**这一轮不愿意为了等新事件而睡觉，但该做的非阻塞检查一次都不会少**。
+
+#### 为什么 worker 线程通常能赶上
+
+`open()` 因为文件不存在而失败，是内核路径解析层面的错误，几乎不碰磁盘，耗时在微秒级；而主线程从注册完 `setImmediate` 到走进 `epoll_pwait`，中间还要经过 `pending → idle → prepare` 三个阶段的队列遍历。多数情况下，worker 线程「调度 + 系统调用 + 写管道」这几步比主线程「走完前面几个阶段到达 `epoll_pwait`」更快，所以完成通知常常在第一次 `epoll_pwait` 检查前就已经就绪，被同一轮的 `poll` 阶段捕获，`check` 阶段还没轮到，`setImmediate` 一次都跑不出来。
+
+但这是一场真实的竞态，不是确定性保证——实测跑 30 次，29 次 `setImmediate` 计数为 `0`，有 1 次计数为 `1`：worker 线程的调度延迟偶尔会拖过主线程到达 `epoll_pwait` 的时间点，这一轮 `check` 就能抢先跑一次。
+
+#### 大文件为什么能连续跑出很多轮 setImmediate
+
+文件足够大时，现象会反过来——`setImmediate` 能连续打印几十甚至上百次。原因是 `readFile` 内部不是一次系统调用读完，而是分块读的，块大小固定 `512KB`（`lib/internal/fs/utils.js:147` 的 `kReadFileBufferLength`），`read()` 每次最多读一块，读不完就在 `readFileAfterRead` 里再发起下一次（`lib/internal/fs/read/context.js:33-43`）。所以完整流程是：
+
+```
+open()  → 1 次线程池往返
+fstat() → 1 次线程池往返（拿文件大小）
+read()  → ⌈文件大小 / 512KB⌉ 次线程池往返
+close() → 1 次线程池往返
+```
+
+**每一次线程池往返都要单独走一遍 `uv_run` 迭代**：JS 回调把下一次 `read()` 请求提交给线程池后立刻返回，主线程回到 `while` 顶部，这一轮的 `check` 阶段就有机会插队执行排队中的 `setImmediate`。文件越大，分块越多，经历的迭代轮数就越多；再加上每次往返本身有真实的磁盘 I/O 和线程调度耗时，主线程往往还会因为等待而空转好几轮，每轮都重新执行一次 `check`。实测数据（`Node v20.19.4`，`setImmediate` 递归注册）：
+
+| 文件大小 | 预期 `read` 次数（512KB/块） | 实测 `setImmediate` 触发次数 |
+|---|---|---|
+| 100 字节 | 1 | 3 ~ 4 |
+| 2MB | 4 | 16 ~ 20 |
+| 10MB | 20 | 115 ~ 147 |
+
+次数不是和分块数简单成正比，而是随文件增大明显加速增长——分块数变多是一层原因，每次往返的真实耗时波动导致主线程额外空转是另一层原因，两者叠加。
+
+#### 一句话
+
+`setImmediate` 队列非空只改变 `poll` 阶段愿不愿意阻塞等待，不改变 `poll` 阶段本身会不会执行；线程池 I/O 的完成通知走的正是这个阶段，跟 `check` 阶段谁先谁后取决于两条并行执行流的真实调度耗时，是概率意义上的竞态，不是语言规范或者 `libuv` 保证的确定顺序。
+
 ## 六、async/await 的本质
 
 一句话规则：

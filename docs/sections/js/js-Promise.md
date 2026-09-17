@@ -266,6 +266,206 @@ console.log(3);
 ```
 上面代码的输出结果是321。这说明then的回调函数的执行时间，早于setTimeout(fn, 0)。因为then是本轮事件循环执行，setTimeout(fn, 0)在下一轮事件循环开始时执行。
 
+## executor 同步执行与状态记忆
+
+`new Promise(executor)` 中的 `executor` 是**同步执行**的：在构造 `Promise` 对象的那一刻就立即跑完，而不是等到 `.then(..)` 注册时才执行。`.then(..)` 只负责**注册回调**，它和 `executor` 的执行时机没有任何关系。
+
+考虑下面这道题：
+```javascript
+let doSth = new Promise((resolve, reject) => {
+    console.log('hello');
+    resolve();
+});
+
+setTimeout(() => {
+    doSth.then(() => {
+        console.log('over');
+    })
+}, 10000);
+// hello  <-- 立即打印
+// over   <-- 10s 后打印
+```
+`hello` 在第 0 毫秒就打印了，因为 `executor` 随 `new Promise(..)` 同步执行完毕，`resolve()` 也在此时调用，这个 `Promise` 立刻进入 `Fulfilled` 状态。完整的时间线是：
+
+| 时刻 | 发生的事 |
+|------|----------|
+| t=0ms | 执行 `executor` → 打印 `hello`，`Promise` 变为 `Fulfilled` |
+| t=0ms | `setTimeout` 注册，10s 后触发 |
+| t=10000ms | timer 回调执行 → `doSth.then(cb)` 注册回调；因为 `Promise` 已经是 `Fulfilled`，`cb` 被立即推入微任务队列 |
+| t=10000ms | 当前宏任务（timer 回调）执行完、栈清空 → 清空微任务队列 → 打印 `over` |
+
+这里有三点值得强调。
+
+* **对一个已决议的 `Promise` 调用 `.then(..)`，回调不会丢失，也不会同步执行**。它会被放进微任务队列，在当前宏任务（这里是 timer 回调）执行完、调用栈清空后立刻执行。所以 `over` 是在 10s 那个 tick 的微任务阶段打印的，而不是 10s 之后还要再等待什么。这也正是前面 [调用过早](#promise的信任问题) 一节所说的“没有同步的 `Promise`”。
+* **`Promise` 的状态是有记忆性的**。`resolve()` 在 t=0 就发生了，这个结果被保存在 `Promise` 对象上；10s 后才来订阅，拿到的仍然是那个结果。这和事件监听器有本质区别——事件是“错过就错过了”，而 `Promise` 是“只要订阅了就一定能拿到”。这个特性也是 [是可信任的 Promise 吗](#是可信任的-promise-吗) 一节中，`Promise` 能作为“中立的第三方协商机制”被传给多处代码的基础。
+* **想让 `hello` 也延迟 10s，必须推迟 `Promise` 的构造**，而不是推迟 `.then(..)`。要么把 `new Promise(..)` 整个搬进 `setTimeout` 里，要么把它包成一个工厂函数，在 timer 里再调用：
+```javascript
+let doSth = () => new Promise((resolve, reject) => {
+    console.log('hello');
+    resolve();
+});
+
+setTimeout(() => {
+    doSth().then(() => {
+        console.log('over');
+    })
+}, 10000);
+// 10s 后依次打印 hello、over
+```
+
+## then 的四种写法
+
+假设 `doSomething()` 和 `doSomethingElse()` 都返回 `Promise`，下面四种写法的差别在于**谁在等谁**，以及 **`doSomethingElse` 什么时候开始执行**。这是 `Promise` 最容易踩坑的地方。
+
+### 1) `return doSomethingElse()` —— 串行
+
+```javascript
+doSomething().then(function () {
+    return doSomethingElse();
+}).then(finalHandler);
+```
+回调里 `return` 了一个 `Promise`，`then` 会把它**展开**（等它决议后再往下走）。这是真正的链式串行：
+```
+doSomething
+|-----------------|
+                  doSomethingElse
+                  |------------------|
+                                     finalHandler(resultOfDoSomethingElse)
+                                     |--|
+```
+`finalHandler` 拿到的是 `doSomethingElse` 的结果，且错误会沿链传播。
+
+### 2) 忘了 `return` —— 发射后不管
+
+```javascript
+doSomething().then(function () {
+    doSomethingElse();
+}).then(finalHandler);
+```
+`doSomethingElse()` 确实在 `doSomething` 完成后才启动，但回调返回的是 `undefined`，**链条不会等它**：
+```
+doSomething
+|-----------------|
+                  doSomethingElse
+                  |------------------|
+                  finalHandler(undefined)
+                  |--|
+```
+这是最常见的 bug，有两个后果：`finalHandler` 拿到 `undefined` 并提前执行；更要命的是 `doSomethingElse` 内部的 `rejection` **脱离了这条链**，后面挂的 `.catch(..)` 捕获不到，直接变成 `unhandled rejection`。
+
+### 3) `then(doSomethingElse())` —— 并行，且回调被忽略
+
+```javascript
+doSomething().then(doSomethingElse()).then(finalHandler);
+```
+注意这里多了一对括号。`doSomethingElse()` 是**立即同步调用**的——它和 `doSomething()` 在同一个 tick 就启动了，根本没等前者完成：
+```
+doSomething
+|-----------------|
+doSomethingElse
+|---------------------|
+                  finalHandler(resultOfDoSomething)
+                  |--|
+```
+更隐蔽的是第二层问题：传给 `then` 的是一个 `Promise` 对象，不是函数。**`then` 对非函数参数的规范行为是直接忽略**（值穿透），所以这一步等价于 `doSomething().then(null)`——`doSomething` 的决议值原封不动传给了 `finalHandler`。整句话看起来在编排流程，实际上什么都没编排。
+
+### 4) `then(doSomethingElse)` —— 串行，且传值
+
+```javascript
+doSomething().then(doSomethingElse).then(finalHandler);
+```
+时序上和第 1 种完全相同，都是串行。唯一的区别：这里传的是函数引用，`doSomething` 的决议值会作为**参数**传给 `doSomethingElse`：
+```javascript
+// 写法 4 等价于：
+doSomething().then(function (value) {
+    return doSomethingElse(value);
+});
+
+// 而写法 1 的回调形参是空的，丢弃了上游的值：
+doSomething().then(function () {
+    return doSomethingElse();
+});
+```
+所以 1 和 4 不是任意可替换的。如果 `doSomethingElse` 需要上游的值，只能用 4（或者在 1 里显式声明形参并传下去）；反过来，如果 `doSomethingElse` 对入参敏感（类似 `[1,2,3].map(parseInt)` 那种多余实参引发的陷阱），无脑用 4 反而会出问题。
+
+### 小结
+
+| 写法 | `doSomethingElse` 何时启动 | 链条是否等待它 | `finalHandler` 收到 |
+|------|---------------------------|---------------|---------------------|
+| `return doSomethingElse()` | `doSomething` 完成后 | 是 | `doSomethingElse` 的结果 |
+| `doSomethingElse()`（无 return） | `doSomething` 完成后 | 否 | `undefined` |
+| `then(doSomethingElse())` | **立即**，与 `doSomething` 并行 | 否（回调被忽略） | `doSomething` 的结果 |
+| `then(doSomethingElse)` | `doSomething` 完成后 | 是 | `doSomethingElse` 的结果 |
+
+一句话记：**`then` 只接受函数；回调里必须 `return` 才能接上链条。** 写法 2 漏了 `return`，写法 3 漏的是函数本身。
+
+## 括号就是"现在调用"
+
+上一节写法 3 里，`doSomethingElse` 为什么会和 `doSomething` 一起同步执行，而不是等到 `then` 回调执行时才跑？这里的关键其实**和 `Promise` 无关**，而是 `JavaScript` 的实参求值规则。
+
+`then(..)` 本身是一次函数调用。要调用它，引擎必须**先把括号里的表达式求值出来**，才能把结果作为实参传进去。而 `doSomethingElse()` 这个表达式的求值方式，就是调用这个函数。把它拆开写就一目了然：
+
+```javascript
+// 你写的
+doSomething().then(doSomethingElse());
+
+// 引擎实际做的
+const p   = doSomething();        // ① 调用 doSomething，拿到 promise
+const arg = doSomethingElse();    // ② 求值实参 → 现在就调用了 doSomethingElse！
+p.then(arg);                      // ③ 把上一步的返回值传给 then
+```
+①②③ 全部在**同一个同步 tick** 里顺序执行完。`then` 是在第 ③ 步才被调用的，而 `doSomethingElse` 在第 ② 步就已经跑掉了。
+
+这和 `Promise` 没关系，任何函数都一样：`foo(bar())` 中 `bar` 一定先于 `foo` 执行。同一个坑还有一个经典变体：
+```javascript
+setTimeout(fn(), 1000);   // fn 立即执行，setTimeout 收到的是 fn 的返回值
+setTimeout(fn, 1000);     // 1s 后执行 fn
+```
+
+所以区别只在于**有没有那对括号**：
+
+* `doSomethingElse` —— 我把**这个函数**交给你，你以后替我调；
+* `doSomethingElse()` —— 我**现在就调用**它，然后把**返回值**交给你。
+
+跑一遍验证：
+```javascript
+function doSomething() {
+    console.log('A: doSomething 被调用');
+    return new Promise(r => setTimeout(() => {
+        console.log('A: doSomething 完成');
+        r('A结果');
+    }, 1000));
+}
+
+function doSomethingElse() {
+    console.log('B: doSomethingElse 被调用');
+    return new Promise(r => setTimeout(() => {
+        console.log('B: doSomethingElse 完成');
+        r('B结果');
+    }, 1000));
+}
+
+doSomething().then(doSomethingElse()).then(v => console.log('final:', v));
+// A: doSomething 被调用
+// B: doSomethingElse 被调用      <-- 紧挨着，同一 tick，根本没等 A
+// A: doSomething 完成
+// B: doSomethingElse 完成
+// final: A结果                   <-- 是 A 的结果，说明 then 的参数被忽略了
+
+doSomething().then(doSomethingElse).then(v => console.log('final:', v));
+// A: doSomething 被调用
+// A: doSomething 完成
+// B: doSomethingElse 被调用      <-- 等 A 完成后才调用
+// B: doSomethingElse 完成
+// final: B结果
+```
+
+这和上一节 [executor 同步执行与状态记忆](#executor-同步执行与状态记忆) 是同一类问题：**什么时候"注册"，什么时候"执行"**。
+
+* 上一题：`new Promise(executor)` 的 `executor` 随构造同步执行，`.then(..)` 只是注册 —— 所以 `hello` 立即打印；
+* 这一题：`doSomethingElse()` 随实参求值同步执行，`then` 只是注册 —— 所以 B 立即启动。
+
+两者的错误直觉是同一个：**误以为写在"异步语境"里的代码就会被延迟**。实际上 `JavaScript` 只延迟你**显式交出去的函数**，而不延迟任何已经写成调用形式的表达式。
 
 ## Promise的局限性
 
